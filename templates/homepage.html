@@ -6,35 +6,14 @@
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
     <style>
-    body { margin:0; padding:0; }
-    #map { position:absolute; top:0; bottom:0; width:100%; }
-</style>
+    	body { margin:0; padding:0; }
+    	#map { position:absolute; top:0; bottom:0; width:100%; }
+	</style>
 </head>
 
 <body>
 <div id='map'></div>
-<button id="button">Hello</button>
-<script>
-
-
-L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
-
-var output = document.getElementById('output');
-var map = L.mapbox.map('map', 'mapbox.streets');
-var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
-geocoderControl.addTo(map);
-geocoderControl.on('select', function(res) {
-    console.log(res);
-    var latlon = res.feature.geometry.coordinates;
-    var lat = latlon[0];
-    var lon = latlon[1];
-    console.log(latlon);
-    $.get('/store_latlon?lat=' + lat + "&lon=" + lon);
-
-});
-
-</script>
-
+<script src="/static/js/map.js"></script>
 </body>
 
 

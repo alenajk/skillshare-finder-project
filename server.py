@@ -20,11 +20,8 @@ def index():
 @app.route('/store_latlon', methods=['GET','POST'])
 def store_latlon():
 
-    print "starting"
     lat = int(round(float(request.args.get('lat'))))
     lon = int(round(float(request.args.get('lon'))))
-    print "hi"
-    print lat, lon
     location = Location(lat=lat, lon=lon)
 
     # adding the location info to the DB
