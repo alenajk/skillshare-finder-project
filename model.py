@@ -12,7 +12,7 @@ class User(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.Integer)
+    name = db.Column(db.String(40))
     username = db.Column(db.String(20))
     password = db.Column(db.String(30))
     phone = db.Column(db.Integer)
@@ -45,6 +45,39 @@ class UserHobbyLevel(db.Model):
 
     def __repr__(self):
         return "<UserHobbyLevel user_id=%s hobby name=%s level=%s" % (self.user_id, self.hobby.name)
+
+class LocationTransaction(db.Model):
+
+    __tablename__ = "location_transactions"
+
+    location_transaction_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
+    hobby_id = db.Column(db.Integer, db.ForeignKey('hobbies.hobby_id'))
+    level = db.Column(db.Integer, nullable=False)
+    check_in_time = db.Column(db.DateTime)
+    check_in_duration = db.Column(db.Float)
+
+    # Define relationship to hobby
+    hobby = db.relationship("Hobby", backref=db.backref("location_transactions"))
+    # Define relationship to Location
+    location = db.relationship("Location", backref=db.backref("location_transactions"))
+    
+    def __repr__(self):
+        return "<LocationTransaction user_id=%s hobby name=%s" % (self.user_id, self.hobby.name)
+
+class Location(db.Model):
+
+    __tablename__ = "locations"
+
+    location_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    location_type = db.Column(db.String(20))
+    lat = db.Column(db.Float, nullable=False)
+    lon = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return "<Location location_id=%s location_type=%s lat=%s lon=%s" % (self.location_id, self.location_type, self.lat, self.lon)
+
 
 ############################################################
 # Helper functions
