@@ -1,0 +1,16 @@
+ {% extends 'base.html' %}
+ {% block head %}
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<div>
+    <h1 id='header1'>Skillshare Finder</h1>
+</div>
+
+<form action='/register' method='POST'>
+    <p><label>Username:</label>
+    <input type="text" name="username" id="username">
+    </p>
+</form>
+{% endblock %}

@@ -46,31 +46,35 @@ class UserHobbyLevel(db.Model):
     def __repr__(self):
         return "<UserHobbyLevel user_id=%s hobby name=%s level=%s" % (self.user_id, self.hobby.name)
 
-class LocationTransaction(db.Model):
+class CheckIn(db.Model):
 
-    __tablename__ = "location_transactions"
+    __tablename__ = "check_ins"
 
-    location_transaction_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
+    check_in_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'))
     hobby_id = db.Column(db.Integer, db.ForeignKey('hobbies.hobby_id'))
-    level = db.Column(db.Integer, nullable=False)
+    level = db.Column(db.Integer)
     check_in_time = db.Column(db.DateTime)
     check_in_duration = db.Column(db.Float)
+    city = db.Column(db.String(30))
+    lat = db.Column(db.Float, nullable=False)
+    lon = db.Column(db.Float, nullable=False)
 
     # Define relationship to hobby
-    hobby = db.relationship("Hobby", backref=db.backref("location_transactions"))
+    hobby = db.relationship("Hobby", backref=db.backref("check_ins"))
     # Define relationship to Location
-    location = db.relationship("Location", backref=db.backref("location_transactions"))
+    location = db.relationship("Location", backref=db.backref("check_ins"))
     
     def __repr__(self):
-        return "<LocationTransaction user_id=%s hobby name=%s" % (self.user_id, self.hobby.name)
+        return "<CheckIn user_id=%s hobby name=%s" % (self.user_id, self.hobby.name)
 
 class Location(db.Model):
 
     __tablename__ = "locations"
 
     location_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    # city = db.Column(db.String(30))
     location_type = db.Column(db.String(20))
     lat = db.Column(db.Float, nullable=False)
     lon = db.Column(db.Float, nullable=False)

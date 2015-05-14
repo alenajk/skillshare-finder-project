@@ -1,3 +1,17 @@
+var loc = {};
+
+function cityFromContext(context) {
+    for(var i = 0; i < context.length; i++) {
+        var dictionary = context[i] 
+        console.log(dictionary)
+        console.log(dictionary.id)
+        if (dictionary.id.indexOf('place') >= 0 ){
+            return dictionary.text;
+        }
+    }
+    return null
+};
+
 L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
 
 var output = document.getElementById('output');
@@ -7,12 +21,20 @@ geocoderControl.addTo(map);
 geocoderControl.on('select', function(res) {
     console.log(res);
     var latlon = res.feature.geometry.coordinates;
-    var data = {
+    console.log(res.feature.context)
+    var city = cityFromContext(res.feature.context);
+    console.log(city)
+    var loc = {
     	lat : latlon[0],
-    	lon : latlon[1]
+    	lon : latlon[1],
+        city : city
     };
+    $('#map').on('click', '.trigger', function() {
+       $.get('/checkin', loc); 
+    });
     console.log(latlon);
-    $.get('/store_latlon', data);
+    console.log(location);
+    // Add a pin to the map
     L.mapbox.featureLayer({
     type: 'Feature',
     geometry: {
@@ -23,10 +45,12 @@ geocoderControl.on('select', function(res) {
         ]
     },
     properties: {
-        title: 'Peregrine Espresso',
-        description: '1718 14th St NW, Washington, DC',
+        title: 'You',
+        description: 'Latitude: ' + latlon[0] + 'Longitude: ' + latlon[1],
         'marker-size': 'large',
         'marker-color': '#2EB8B8',
     }
-}).addTo(map);
+}).bindPopup('<button class="trigger">Check in here</button>')
+    .addTo(map);
 });
+
