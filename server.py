@@ -28,10 +28,8 @@ def check_in():
 
     # adding the location info to the DB
     db.session.add(checkin)
-    print "hi"
     db.session.commit()
-    print "hi"
-    
+
     return "hi"
 
 @app.route('/register', methods=['GET','POST'])

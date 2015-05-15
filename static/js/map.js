@@ -30,7 +30,9 @@ geocoderControl.on('select', function(res) {
         city : city
     };
     $('#map').on('click', '.trigger', function() {
-       $.get('/checkin', loc); 
+        '/checkin', loc;
+        $('#check_in_button').toggle(false);
+        $('#check_out_button').toggle(true);
     });
     console.log(latlon);
     console.log(location);
@@ -50,7 +52,15 @@ geocoderControl.on('select', function(res) {
         'marker-size': 'large',
         'marker-color': '#2EB8B8',
     }
-}).bindPopup('<button class="trigger">Check in here</button>')
+}).bindPopup('<button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" style="display:none" id="check_out_button" class="trigger">Check out</button>')
     .addTo(map);
 });
+
+// var message = document.getElementById("message-to-change");
+// button = document.getElementById("change-hello-to-goodbye-button");
+// button.addEventListener('click', makeGoodbye);
+
+// function makeGoodbye(){
+//   message.innerText = "goodbye";
+// }
 
