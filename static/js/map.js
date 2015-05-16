@@ -29,10 +29,22 @@ geocoderControl.on('select', function(res) {
     	lon : latlon[1],
         city : city
     };
-    $('#map').on('click', '.trigger', function() {
-        '/checkin', loc;
+    $('#map').on('click', '#check_in_button', function() {
+        $.get('/checkin', loc, function(res){
+            check_in_id_num = res.reply.check_in_id;
+            data = {
+                check_in_id : check_in_id_num
+            };
+        });
         $('#check_in_button').toggle(false);
         $('#check_out_button').toggle(true);
+    });
+    $('#map').on('click', '#check_out_button', function() {
+        $.get('/checkout', data);
+        console.log('hi');
+        console.log(data)
+        $('#check_in_button').toggle(true);
+        $('#check_out_button').toggle(false);
     });
     console.log(latlon);
     console.log(location);
@@ -52,15 +64,6 @@ geocoderControl.on('select', function(res) {
         'marker-size': 'large',
         'marker-color': '#2EB8B8',
     }
-}).bindPopup('<button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" style="display:none" id="check_out_button" class="trigger">Check out</button>')
+}).bindPopup('<button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" class="trigger" style="display:none" id="check_out_button">Check out</button>')
     .addTo(map);
 });
-
-// var message = document.getElementById("message-to-change");
-// button = document.getElementById("change-hello-to-goodbye-button");
-// button.addEventListener('click', makeGoodbye);
-
-// function makeGoodbye(){
-//   message.innerText = "goodbye";
-// }
-

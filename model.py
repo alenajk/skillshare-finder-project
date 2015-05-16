@@ -60,14 +60,15 @@ class CheckIn(db.Model):
     city = db.Column(db.String(30))
     lat = db.Column(db.Float, nullable=False)
     lon = db.Column(db.Float, nullable=False)
+    checked_in = db.Column(db.Boolean, nullable=False)
 
     # Define relationship to hobby
     hobby = db.relationship("Hobby", backref=db.backref("check_ins"))
     # Define relationship to Location
     location = db.relationship("Location", backref=db.backref("check_ins"))
     
-    def __repr__(self):
-        return "<CheckIn user_id=%s hobby name=%s" % (self.user_id, self.hobby.name)
+    # def __repr__(self):
+        # return "<CheckIn user_id=%s hobby name=%s" % (self.user_id, self.hobby.name)
 
 class Location(db.Model):
 
