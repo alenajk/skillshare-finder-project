@@ -17,37 +17,6 @@ def index():
 
     return render_template("homepage.html")
 
-@app.route('/checkin', methods=['GET','POST'])
-def check_in():
-
-    print "hi"
-    print request.args.get('lat')
-    lat = int(round(float(request.args.get('lat'))))
-    lon = int(round(float(request.args.get('lon'))))
-    city = request.args.get('city')
-    checkin = CheckIn(lat=lat, lon=lon, city=city, checked_in=True)
-
-    # adding the location info to the DB
-    db.session.add(checkin)
-    db.session.commit()
-    check_in_id = checkin.check_in_id
-    print check_in_id
-    reply = {'check_in_id' : check_in_id}
-    return jsonify(reply=reply)
-
-@app.route('/checkout', methods=['GET','POST'])
-def check_out():
-    
-    print "hello"
-    check_in_id = request.args.get('check_in_id')
-    print "check_in_id", check_in_id
-    check_in = CheckIn.query.filter_by(check_in_id=check_in_id).all()
-    print "check_in", check_in
-    check_in[0].checked_in = False
-    db.session.commit()
-
-    return "hi"
-
 @app.route('/register', methods=['GET','POST'])
 def register():
     
@@ -108,6 +77,50 @@ def logout():
     session['email'] = []
     session['password'] = []
     return redirect('/')
+
+@app.route('/get_nearby')
+def get_nearby():
+    
+    city = request.args.get('city')
+    active_nearby_users = CheckIn.query.filter_by(checked_in=True,city=city).all()
+
+    # for user in active_nearby_users:
+    #     print user, user.lat, user.lon
+
+    # Create a list of dictionaries containing nearby checked-in user location
+    active_nearby_users_dicts = [user.to_dict() for user in active_nearby_users]
+
+    return jsonify(reply=active_nearby_users_dicts)
+
+@app.route('/checkin', methods=['GET','POST'])
+def check_in():
+
+    print request.args.get('lat')
+    lat = float(request.args.get('lat'))
+    lon = float(request.args.get('lon'))
+    city = request.args.get('city')
+    checkin = CheckIn(lat=lat, lon=lon, city=city, checked_in=True)
+
+    # adding the location info to the DB
+    db.session.add(checkin)
+    db.session.commit()
+    check_in_id = checkin.check_in_id
+    print check_in_id
+    reply = {'check_in_id' : check_in_id}
+    return jsonify(reply=reply)
+
+@app.route('/checkout', methods=['GET','POST'])
+def check_out():
+    
+    print "hello"
+    check_in_id = request.args.get('check_in_id')
+    print "check_in_id", check_in_id
+    check_in = CheckIn.query.filter_by(check_in_id=check_in_id).all()
+    print "check_in", check_in
+    check_in[0].checked_in = False
+    db.session.commit()
+
+    return "hi"
 
 if __name__ == "__main__":
     app.debug = True

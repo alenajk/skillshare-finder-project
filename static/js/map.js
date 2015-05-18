@@ -1,14 +1,14 @@
 var loc = {};
+var nearby_users = [];
+var latlon = [];
 
 function cityFromContext(context) {
     for(var i = 0; i < context.length; i++) {
-        var dictionary = context[i] 
-        console.log(dictionary)
-        console.log(dictionary.id)
+        var dictionary = context[i];
         if (dictionary.id.indexOf('place') >= 0 ){
             return dictionary.text;
-        }
-    }
+        };
+    };
     return null
 };
 
@@ -20,13 +20,13 @@ var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
 geocoderControl.addTo(map);
 geocoderControl.on('select', function(res) {
     console.log(res);
-    var latlon = res.feature.geometry.coordinates;
+    latlon = res.feature.geometry.coordinates;
     console.log(res.feature.context)
     var city = cityFromContext(res.feature.context);
     console.log(city)
     var loc = {
-    	lat : latlon[0],
-    	lon : latlon[1],
+        lat : latlon[0],
+        lon : latlon[1],
         city : city
     };
     $('#map').on('click', '#check_in_button', function() {
@@ -66,4 +66,54 @@ geocoderControl.on('select', function(res) {
     }
 }).bindPopup('<button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" class="trigger" style="display:none" id="check_out_button">Check out</button>')
     .addTo(map);
+    $.get('/get_nearby', {city : city}, function(res){
+        console.log(res.reply);
+        nearby_users = res.reply;
+        dropNearbyPins(latlon[0],latlon[1]);
+    });
 });
+
+function dropNearbyPins(lat, lon) {
+    selected_users = [];
+    for (var i=0; i<nearby_users.length; i++){
+        var nearby_user = nearby_users[i];
+        var dist = haversine(latlon[0],latlon[1],nearby_user.lat, nearby_user.lon);
+        console.log(nearby_user,dist);
+        if (dist<1){
+            selected_users.push(nearby_user);
+        };
+    };
+    console.log(selected_users);
+    for (var i=0; i<selected_users.length; i++){
+        var selected_user = selected_users[i];
+        L.mapbox.featureLayer({
+        type: 'Feature',
+        geometry: {
+            type: 'Point',
+            coordinates: [
+              selected_user.lat,
+              selected_user.lon 
+            ]
+        },
+        properties: {
+            title: 'Other',
+            'marker-size': 'large',
+            'marker-color': '#0095b6'
+        }
+    }).addTo(map);    
+    };
+};
+
+function haversine(lat1, lon1, lat2, lon2){
+    console.log(lat1, lon1, lat2, lon2);
+    var r = 6372.8 // Earth radius in km
+    var dlat = (lat2-lat1)*Math.PI/180;
+    var dlon = (lon2-lon1)*Math.PI/180;
+    var a = Math.sin(dlat/2) * Math.sin(dlat/2) +
+            Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) *
+            Math.sin(dlon/2) * Math.sin(dlon/2);
+    var c = 2 * Math.asin(Math.sqrt(a));
+    var d = r * c;
+    console.log(d);
+    return d
+};

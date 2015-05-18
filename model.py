@@ -67,6 +67,15 @@ class CheckIn(db.Model):
     hobby = db.relationship("Hobby", backref=db.backref("check_ins"))
     # Define relationship to Location
     location = db.relationship("Location", backref=db.backref("check_ins"))
+
+    def to_dict(self):
+        return {
+            'check_in_id' : self.check_in_id,
+            'user_id' : self.user_id,
+            'city' : self.city,
+            'lat' : self.lat,
+            'lon' : self.lon
+        }
     
     # def __repr__(self):
         # return "<CheckIn user_id=%s hobby name=%s" % (self.user_id, self.hobby.name)
