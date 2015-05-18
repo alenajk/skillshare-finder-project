@@ -52,6 +52,7 @@ def check_out():
 def register():
     
     if request.method == "POST":
+       
         name = request.form.get('name')
         username = request.form.get('username')
         password = request.form.get('password')
@@ -59,14 +60,54 @@ def register():
         phone = request.form.get('phone')
         pref = request.form.get('pref')
 
-        user = User(name=name, username=username, password=password, email=email, phone=phone, contact_pref=pref)
-        db.session.add(user)
-        db.session.commit()
-        flash('You were successfully registered!')
-        
-        return redirect('/')
+        temp = User.query.filter_by(email=email).all()
+
+        if temp != []:
+            flash("That email has already been registered.")
+            return redirect('/register')
+        else:
+            # Create instance of User class with provided info and add to db
+            user = User(name=name, username=username, password=password, 
+                email=email, phone=phone, contact_pref=pref)
+            db.session.add(user)
+            db.session.commit()
+            flash('You were successfully registered!')
+            return redirect('/')
     
     return render_template('register.html')
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+
+    if request.method == "POST":
+        email = request.form.get('email')
+        password = request.form.get('password')
+        pw_in_db = User.query.filter_by(email=email).all()
+        print password
+        print pw_in_db[0].password
+        # Check to see if email exists in db
+        if pw_in_db == []:
+            flash("Looks like that email hasn't been registered yet.")
+            return redirect('/register')
+        else:
+            if pw_in_db[0].password == password:
+                session['email'] = email
+                session['password'] = password
+                user_id = User.query.filter_by(email=email).one().user_id
+                flash("You've been successfully logged in!")
+                return redirect("/")
+            else:
+                flash("Oops - wrong password. Try again.")
+                return redirect("/login")
+
+    return render_template("login_form.html")
+
+@app.route('/logout')
+def logout():
+
+    session['email'] = []
+    session['password'] = []
+    return redirect('/')
 
 if __name__ == "__main__":
     app.debug = True

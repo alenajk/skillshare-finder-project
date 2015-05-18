@@ -1,5 +1,10 @@
 <h3>Skillshare finder</h3>
 <ul>
-	<li><a href="/register">Register</a></li>
-	<li><a href="/login">Login</a></li>
+    {% if session['email'] %}
+        <li><a href="/logout">Log out</a></li>
+    {% else %}
+        <li><a href="/login">Login</a></li>
+        <li><a href="/register">Register</a></li>
+    {% endif %}
+
 </ul>
