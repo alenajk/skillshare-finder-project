@@ -52,14 +52,20 @@ def check_out():
 def register():
     
     if request.method == "POST":
-        username = reguest.form.get('username')
-        password = reqeust.form.get('password')
+        name = request.form.get('name')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        pref = request.form.get('pref')
 
-        user = User(username=username, password=password)
+        user = User(name=name, username=username, password=password, email=email, phone=phone, contact_pref=pref)
         db.session.add(user)
         db.session.commit()
-
+        flash('You were successfully registered!')
+        
         return redirect('/')
+    
     return render_template('register.html')
 
 if __name__ == "__main__":

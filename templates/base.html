@@ -6,6 +6,9 @@
 </head>
 
 <body>
+	<div class="container-fluid">
+    	{% include 'navbar.html' %}
+	<div>
 {% with messages = get_flashed_messages() %}
 	{% if messages %}
 		<ul class=flashes>

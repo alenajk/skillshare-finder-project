@@ -4,13 +4,32 @@
 {% endblock %}
 
 {% block body %}
-<div>
-    <h1 id='header1'>Skillshare Finder</h1>
-</div>
-
 <form action='/register' method='POST'>
+    <p><label>Full name:</label>
+    <input type="text" name="name" id="name">
+    </p>
     <p><label>Username:</label>
     <input type="text" name="username" id="username">
+    </p>
+    <p><label>Password:</label>
+    <input type="password" name="password" id="password">
+    </p>
+    <p><label>Email:</label>
+    <input type="text" name="email" id="email">
+    </p>
+    <p><label>Phone number:</label>
+    <input type="text" name="phone" id="phone">
+    </p>
+    <p><label>How would you like to be notified of someone coming to meet you?:</label>
+    <br>
+    <br>
+    <input type="radio" name="pref" value="text">Text
+    <input type="radio" name="pref" value="call">Call
+    <input type="radio" name="pref" value="email">Email
+    </p>
+    <p>
+    <br>
+    <input type="submit" value="Submit">
     </p>
 </form>
 {% endblock %}
