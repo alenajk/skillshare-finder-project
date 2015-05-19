@@ -20,12 +20,20 @@ def index():
     checkedin=None
     if session['email']:
         user_id=User.query.filter_by(email=session['email']).one().user_id
-        checkedin = CheckIn.query.filter_by(user_id=user_id).all()[0].checked_in
+        checkedin = CheckIn.query.filter_by(user_id=user_id).all()
+        if checkedin:
+            # Make sure I'm getting the most recent checkin
+            # Order by reverse ID
+            checkedin = checkedin[0].checked_in
         if checkedin == True:
-            lat = CheckIn.query.filter_by(user_id=user_id).all()[0].lat
-            lon = CheckIn.query.filter_by(user_id=user_id).all()[0].lon
-            checkedin = [lat,lon]
+            check_in_object = CheckIn.query.filter_by(user_id=user_id).all()[0]
+            lat = check_in_object.lat
+            lon = check_in_object.lon
+            checkin_id = check_in_object.check_in_id
+            checkedin = [lat,lon,checkin_id]
             print checkedin
+        else:
+            checkedin = 'false'
     return render_template("homepage.html", checkedin=checkedin)
 
 @app.route('/register', methods=['GET','POST'])

@@ -1,9 +1,15 @@
 // Variable and function definitions
 
+L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
+
 var loc = {};
 var nearby_users = [];
 var latlon = [];
 console.log(checkedin);
+var output = document.getElementById('output');
+var map = L.mapbox.map('map', 'mapbox.streets');
+var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
+geocoderControl.addTo(map);
 
 function cityFromContext(context) {
     for(var i = 0; i < context.length; i++) {
@@ -28,111 +34,6 @@ function haversine(lat1, lon1, lat2, lon2){
     console.log(d);
     return d
 };
-
-L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
-
-var output = document.getElementById('output');
-var map = L.mapbox.map('map', 'mapbox.streets');
-var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
-geocoderControl.addTo(map);
-
-// If user is checked in anywhere, add pin to map
-if (checkedin){
-    map.setView([checkedin[1],checkedin[0]],15);
-    $('#map').on('click', '#check_in_button', function() {
-        $.get('/checkin', loc, function(res){
-            check_in_id_num = res.reply.check_in_id;
-            data = {
-                check_in_id : check_in_id_num
-            };
-        });
-        $('#check_in_button').toggle(false);
-        $('#check_out_button').toggle(true);
-    });
-    
-    $('#map').on('click', '#check_out_button', function() {
-        $.get('/checkout', data);
-        console.log('hi');
-        console.log(data)
-        $('#check_in_button').toggle(true);
-        $('#check_out_button').toggle(false);
-    });
-    
-    // Add a pin to the map
-    L.mapbox.featureLayer({
-    type: 'Feature',
-    geometry: {
-        type: 'Point',
-        coordinates: [
-          checkedin[0],
-          checkedin[1] 
-        ]
-    },
-    properties: {
-        title: 'You',
-        description: 'Latitude: ' + checkedin[0] + 'Longitude: ' + checkedin[1],
-        'marker-symbol': 'star-stroked',
-        'marker-size': 'large',
-        'marker-color': '#2EB8B8',
-    }
-}).bindPopup('<button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" class="trigger" style="display:none" id="check_out_button">Check out</button>')
-    .addTo(map);
-}else{
-        geocoderControl.on('select', function(res) {
-    latlon = res.feature.geometry.coordinates;
-    var city = cityFromContext(res.feature.context);
-    var loc = {
-        lat : latlon[0],
-        lon : latlon[1],
-        city : city
-    };
-    $('#map').on('click', '#check_in_button', function() {
-        $.get('/checkin', loc, function(res){
-            check_in_id_num = res.reply.check_in_id;
-            data = {
-                check_in_id : check_in_id_num
-            };
-        });
-        $('#check_in_button').toggle(false);
-        $('#check_out_button').toggle(true);
-    });
-    $('#map').on('click', '#check_out_button', function() {
-        $.get('/checkout', data);
-        console.log('hi');
-        console.log(data)
-        $('#check_in_button').toggle(true);
-        $('#check_out_button').toggle(false);
-    });
-    console.log(latlon);
-    console.log(location);
-    // Add a pin to the map
-    L.mapbox.featureLayer({
-    type: 'Feature',
-    geometry: {
-        type: 'Point',
-        coordinates: [
-          latlon[0],
-          latlon[1] 
-        ]
-    },
-    properties: {
-        title: 'You',
-        description: 'Latitude: ' + latlon[0] + 'Longitude: ' + latlon[1],
-        'marker-symbol': 'star-stroked',
-        'marker-size': 'large',
-        'marker-color': '#2EB8B8',
-    }
-}).bindPopup('<button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" class="trigger" style="display:none" id="check_out_button">Check out</button>')
-    .addTo(map);
-    $.get('/get_nearby', {city : city}, function(res){
-        console.log(res.reply);
-        nearby_users = res.reply;
-        dropNearbyPins(latlon[0],latlon[1]);
-    });
-});
-    };
-
-
 
 function dropNearbyPins(lat, lon) {
     selected_users = [];
@@ -165,3 +66,96 @@ function dropNearbyPins(lat, lon) {
     }).bindPopup('<p>User_id: '+selected_user.user_id+'</p>').addTo(map);    
     };
 };
+
+function addCheckoutListener(new_id){
+    $('#map').on('click', '#check_out_button', function() {
+        $.get('/checkout', {check_in_id : new_id});
+        $('#check_in_button').toggle(true);
+        $('#check_out_button').toggle(false);
+        // remove marker instead of toggling buttons?
+        // show search bar
+    });
+}
+
+// ****************************************************************************
+// If user is checked in anywhere, add pin to map
+
+if (checkedin){
+    map.setView([checkedin[1],checkedin[0]],15);
+    addCheckoutListener(checkedin[2]);
+    // remove geocodeController - search option
+    // Listen for click on check-in button
+    $('#map').on('click', '#check_in_button', function() {
+        $.get('/checkin', loc, function(res){
+            var check_in_id_num = res.reply.check_in_id;
+            addCheckoutListener(check_in_id_num);
+        });
+        $('#check_in_button').toggle(false);
+        $('#check_out_button').toggle(true);
+    });
+    
+    // Add a pin to the map
+    L.mapbox.featureLayer({
+    type: 'Feature',
+    geometry: {
+        type: 'Point',
+        coordinates: [
+          checkedin[0],
+          checkedin[1] 
+        ]
+    },
+    properties: {
+        title: 'You',
+        description: 'Latitude: ' + checkedin[0] + 'Longitude: ' + checkedin[1],
+        'marker-symbol': 'star-stroked',
+        'marker-size': 'large',
+        'marker-color': '#2EB8B8',
+    }
+}).bindPopup('<button id="check_in_button" class="trigger" style="display:none">Check in here</button>'+'<button id="check_out_button" class="trigger" id="check_out_button">Check out</button>')
+    .addTo(map);
+};
+
+geocoderControl.on('select', function(res) {
+    latlon = res.feature.geometry.coordinates;
+    console.log(latlon);
+    var city = cityFromContext(res.feature.context);
+    var loc = {
+        lat : latlon[0],
+        lon : latlon[1],
+        city : city
+    };
+    $('#map').on('click', '#check_in_button', function() {
+        $.get('/checkin', loc, function(res){
+            var check_in_id_num = res.reply.check_in_id;
+            addCheckoutListener(check_in_id_num);
+        });
+        $('#check_in_button').toggle(false);
+        $('#check_out_button').toggle(true);
+    });
+    console.log(latlon);
+    console.log(location);
+    // Add a pin to the map
+    L.mapbox.featureLayer({
+    type: 'Feature',
+    geometry: {
+        type: 'Point',
+        coordinates: [
+          latlon[0],
+          latlon[1] 
+        ]
+    },
+    properties: {
+        title: 'You',
+        description: 'Latitude: ' + latlon[0] + 'Longitude: ' + latlon[1],
+        'marker-symbol': 'star-stroked',
+        'marker-size': 'large',
+        'marker-color': '#2EB8B8',
+    }
+}).bindPopup('<button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" class="trigger" style="display:none" id="check_out_button">Check out</button>')
+    .addTo(map);
+    $.get('/get_nearby', {city : city}, function(res){
+        console.log(res.reply);
+        nearby_users = res.reply;
+        dropNearbyPins(latlon[0],latlon[1]);
+    });
+});
