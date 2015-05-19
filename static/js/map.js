@@ -61,6 +61,7 @@ geocoderControl.on('select', function(res) {
     properties: {
         title: 'You',
         description: 'Latitude: ' + latlon[0] + 'Longitude: ' + latlon[1],
+        'marker-symbol': 'star-stroked',
         'marker-size': 'large',
         'marker-color': '#2EB8B8',
     }
@@ -97,10 +98,11 @@ function dropNearbyPins(lat, lon) {
         },
         properties: {
             title: 'Other',
+            'marker-symbol': 'pitch',
             'marker-size': 'large',
-            'marker-color': '#0095b6'
+            'marker-color': '#FF0066'
         }
-    }).addTo(map);    
+    }).bindPopup('<p>User_id: '+selected_user.user_id+'</p>').addTo(map);    
     };
 };
 

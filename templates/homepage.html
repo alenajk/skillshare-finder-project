@@ -1,28 +1,36 @@
- {% extends 'base.html' %}
- {% block head %}
-    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
+{% extends 'base.html' %}
+{% block head %}
+    {% if session['email'] %}
+        <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
+        <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
+    {% endif %}
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
-    <style>
-    	body { margin:0; padding:0; }
-    	
-        #map { 
-            position:absolute; 
-            top:50px; 
-            bottom:10px; 
-            width:90%;
-            margin: 50px 80px 50px 50px; 
-        }
-        
-        #header1 {
-            margin-right: auto;
-            margin-left: auto;
-            width: 50%;
-        }
-	</style>
+    {% if session['email'] %}
+        <style>
+        	body { margin:0; padding:0; }
+        	
+            #map { 
+                position:absolute; 
+                top:70px; 
+                bottom:10px; 
+                width:90%;
+                margin: 50px 80px 50px 50px; 
+            }
+            
+            #header1 {
+                margin-right: auto;
+                margin-left: auto;
+                width: 50%;
+            }
+    	</style>
+    {% endif %}
 {% endblock %}
 
 {% block body %}
-<div id='map'></div>
-<script src="/static/js/map.js"></script>
+{% if session['email'] %}
+    <div id='map'></div>
+    <script src="/static/js/map.js"></script>
+{% else %}
+<h1>Homepage!</h1>
+{% endif %}
 {% endblock %}
