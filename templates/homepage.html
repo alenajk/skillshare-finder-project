@@ -29,6 +29,9 @@
 {% block body %}
 {% if session['email'] %}
     <div id='map'></div>
+    <script>
+        var checkedin = {{ checkedin }}
+    </script>
     <script src="/static/js/map.js"></script>
 {% else %}
 <h1>Homepage!</h1>

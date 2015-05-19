@@ -1,6 +1,9 @@
+// Variable and function definitions
+
 var loc = {};
 var nearby_users = [];
 var latlon = [];
+console.log(checkedin);
 
 function cityFromContext(context) {
     for(var i = 0; i < context.length; i++) {
@@ -12,18 +15,72 @@ function cityFromContext(context) {
     return null
 };
 
+function haversine(lat1, lon1, lat2, lon2){
+    console.log(lat1, lon1, lat2, lon2);
+    var r = 6372.8 // Earth radius in km
+    var dlat = (lat2-lat1)*Math.PI/180;
+    var dlon = (lon2-lon1)*Math.PI/180;
+    var a = Math.sin(dlat/2) * Math.sin(dlat/2) +
+            Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) *
+            Math.sin(dlon/2) * Math.sin(dlon/2);
+    var c = 2 * Math.asin(Math.sqrt(a));
+    var d = r * c;
+    console.log(d);
+    return d
+};
+
 L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
 
 var output = document.getElementById('output');
 var map = L.mapbox.map('map', 'mapbox.streets');
 var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
 geocoderControl.addTo(map);
-geocoderControl.on('select', function(res) {
-    console.log(res);
+
+// If user is checked in anywhere, add pin to map
+if (checkedin){
+    map.setView([checkedin[1],checkedin[0]],15);
+    $('#map').on('click', '#check_in_button', function() {
+        $.get('/checkin', loc, function(res){
+            check_in_id_num = res.reply.check_in_id;
+            data = {
+                check_in_id : check_in_id_num
+            };
+        });
+        $('#check_in_button').toggle(false);
+        $('#check_out_button').toggle(true);
+    });
+    
+    $('#map').on('click', '#check_out_button', function() {
+        $.get('/checkout', data);
+        console.log('hi');
+        console.log(data)
+        $('#check_in_button').toggle(true);
+        $('#check_out_button').toggle(false);
+    });
+    
+    // Add a pin to the map
+    L.mapbox.featureLayer({
+    type: 'Feature',
+    geometry: {
+        type: 'Point',
+        coordinates: [
+          checkedin[0],
+          checkedin[1] 
+        ]
+    },
+    properties: {
+        title: 'You',
+        description: 'Latitude: ' + checkedin[0] + 'Longitude: ' + checkedin[1],
+        'marker-symbol': 'star-stroked',
+        'marker-size': 'large',
+        'marker-color': '#2EB8B8',
+    }
+}).bindPopup('<button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" class="trigger" style="display:none" id="check_out_button">Check out</button>')
+    .addTo(map);
+}else{
+        geocoderControl.on('select', function(res) {
     latlon = res.feature.geometry.coordinates;
-    console.log(res.feature.context)
     var city = cityFromContext(res.feature.context);
-    console.log(city)
     var loc = {
         lat : latlon[0],
         lon : latlon[1],
@@ -73,6 +130,9 @@ geocoderControl.on('select', function(res) {
         dropNearbyPins(latlon[0],latlon[1]);
     });
 });
+    };
+
+
 
 function dropNearbyPins(lat, lon) {
     selected_users = [];
@@ -104,18 +164,4 @@ function dropNearbyPins(lat, lon) {
         }
     }).bindPopup('<p>User_id: '+selected_user.user_id+'</p>').addTo(map);    
     };
-};
-
-function haversine(lat1, lon1, lat2, lon2){
-    console.log(lat1, lon1, lat2, lon2);
-    var r = 6372.8 // Earth radius in km
-    var dlat = (lat2-lat1)*Math.PI/180;
-    var dlon = (lon2-lon1)*Math.PI/180;
-    var a = Math.sin(dlat/2) * Math.sin(dlat/2) +
-            Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) *
-            Math.sin(dlon/2) * Math.sin(dlon/2);
-    var c = 2 * Math.asin(Math.sqrt(a));
-    var d = r * c;
-    console.log(d);
-    return d
 };

@@ -15,7 +15,18 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage"""
 
-    return render_template("homepage.html")
+    # Check to see if logged in. If logged in, check to see if checked in,
+    # and if so, pass checkedin=[lat,lon] to homepage template
+    checkedin=None
+    if session['email']:
+        user_id=User.query.filter_by(email=session['email']).one().user_id
+        checkedin = CheckIn.query.filter_by(user_id=user_id).all()[0].checked_in
+        if checkedin == True:
+            lat = CheckIn.query.filter_by(user_id=user_id).all()[0].lat
+            lon = CheckIn.query.filter_by(user_id=user_id).all()[0].lon
+            checkedin = [lat,lon]
+            print checkedin
+    return render_template("homepage.html", checkedin=checkedin)
 
 @app.route('/register', methods=['GET','POST'])
 def register():
