@@ -16,7 +16,7 @@ def index():
     """Homepage"""
 
     # Check to see if logged in. If logged in, check to see if checked in,
-    # and if so, pass checkedin=[lat,lon] to homepage template
+    # and if so, pass checkedin=[lat,lon,checkin_id] to homepage template
     checkedin=None
     if session['email']:
         user_id=User.query.filter_by(email=session['email']).one().user_id
@@ -24,9 +24,9 @@ def index():
         if checkedin:
             # Make sure I'm getting the most recent checkin
             # Order by reverse ID
-            checkedin = checkedin[0].checked_in
+            checkedin = checkedin[-1].checked_in
         if checkedin == True:
-            check_in_object = CheckIn.query.filter_by(user_id=user_id).all()[0]
+            check_in_object = CheckIn.query.filter_by(user_id=user_id).all()[-1]
             lat = check_in_object.lat
             lon = check_in_object.lon
             checkin_id = check_in_object.check_in_id

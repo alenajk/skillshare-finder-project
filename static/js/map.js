@@ -69,6 +69,9 @@ function dropNearbyPins(lat, lon) {
 
 function addCheckoutListener(new_id){
     $('#map').on('click', '#check_out_button', function() {
+        $('.leaflet-control-mapbox-geocoder').show();
+        $('.leaflet-marker-icon').hide();
+        $('.leaflet-popup').hide();
         $.get('/checkout', {check_in_id : new_id});
         $('#check_in_button').toggle(true);
         $('#check_out_button').toggle(false);
@@ -83,11 +86,12 @@ function addCheckoutListener(new_id){
 if (checkedin){
     map.setView([checkedin[1],checkedin[0]],15);
     addCheckoutListener(checkedin[2]);
+    $('.leaflet-control-mapbox-geocoder').hide();
     // remove geocodeController - search option
     // Listen for click on check-in button
     $('#map').on('click', '#check_in_button', function() {
-        $.get('/checkin', loc, function(res){
-            var check_in_id_num = res.reply.check_in_id;
+        $.get('/checkin', {lat:checkedin[0], lon:checkedin[1]}, function(res){
+            check_in_id_num = res.reply.check_in_id;
             addCheckoutListener(check_in_id_num);
         });
         $('#check_in_button').toggle(false);
@@ -125,6 +129,7 @@ geocoderControl.on('select', function(res) {
         city : city
     };
     $('#map').on('click', '#check_in_button', function() {
+        $('.leaflet-control-mapbox-geocoder').hide();
         $.get('/checkin', loc, function(res){
             var check_in_id_num = res.reply.check_in_id;
             addCheckoutListener(check_in_id_num);

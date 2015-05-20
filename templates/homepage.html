@@ -27,6 +27,7 @@
 {% endblock %}
 
 {% block body %}
+{{checkedin}}
 {% if session['email'] %}
     <div id='map'></div>
     <script>
