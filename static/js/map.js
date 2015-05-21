@@ -2,9 +2,10 @@
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
 
-var loc = {};
+var loc = {}; // don't need?
 var nearby_users = [];
 var latlon = [];
+var markerLayer
 console.log(checkedin);
 var output = document.getElementById('output');
 var map = L.mapbox.map('map', 'mapbox.streets');
@@ -111,7 +112,7 @@ if (checkedin){
     });
     
     // Add a pin to the map if already checked in
-    L.mapbox.featureLayer({
+    markerLayer = L.mapbox.featureLayer({
     type: 'Feature',
     geometry: {
         type: 'Point',
@@ -127,12 +128,17 @@ if (checkedin){
         'marker-size': 'large',
         'marker-color': '#2EB8B8',
     }
-}).bindPopup('<button id="check_in_button" class="trigger" style="display:none">Check in here</button>'+'<button id="check_out_button" class="trigger" id="check_out_button">Check out</button>')
-    .addTo(map);
+})
+    markerLayer.bindPopup('<button id="check_in_button" class="trigger" style="display:none">Check in here</button>'+'<button id="check_out_button" class="trigger" id="check_out_button">Check out</button>')
+    markerLayer.addTo(map);
 };
 
 
 geocoderControl.on('select', function(res) {
+    // Clear all markers when re-selecting so users may not check in multiple times
+    if (markerLayer){
+        markerLayer.clearLayers()
+    };
     latlon = res.feature.geometry.coordinates;
     console.log(latlon);
     var city = cityFromContext(res.feature.context);
@@ -145,22 +151,30 @@ geocoderControl.on('select', function(res) {
     $('#map').on('click', '#check_in_button', function() {
         var hobby = document.getElementById("hobby").value
         console.log(hobby);
-        loc['hobby'] = hobby;
-        console.log(loc);
-        checkedin = true;
-        $('.leaflet-control-mapbox-geocoder').hide();
-        $('.leaflet-popup-close-button').hide();
-        $.get('/checkin', loc, function(res){
-            var check_in_id_num = res.reply.check_in_id;
-            addCheckoutListener(check_in_id_num);
-        });
-        $('#check_in_button').toggle(false);
-        $('#check_out_button').toggle(true);
+        
+        // Check to make sure user entered something in the text box
+        // If empty string, alert user to enter something.
+        if (hobby==""){
+            alert("Please enter a hobby");
+        }else{
+            loc['hobby'] = hobby;
+            console.log(loc);
+            checkedin = true;
+            $('.leaflet-control-mapbox-geocoder').hide();
+            $('.leaflet-popup-close-button').hide();
+            $.get('/checkin', loc, function(res){
+                var check_in_id_num = res.reply.check_in_id;
+                addCheckoutListener(check_in_id_num);
+            });
+            $('#check_in_button').toggle(false);
+            $('#check_out_button').toggle(true);
+        };
     });
     console.log(latlon);
     console.log(location);
+    
     // Add a pin to the map where you searched
-    L.mapbox.featureLayer({
+    markerLayer = L.mapbox.featureLayer({
     type: 'Feature',
     geometry: {
         type: 'Point',
@@ -176,8 +190,9 @@ geocoderControl.on('select', function(res) {
         'marker-size': 'large',
         'marker-color': '#2EB8B8',
     }
-}).bindPopup('<p>What are you working on?</p><input type="text" id="hobby" name="hobby">'+'<br><button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" class="trigger" style="display:none" id="check_out_button">Check out</button>')
-    .addTo(map);
+});
+    markerLayer.bindPopup('<p>What are you working on?</p><input type="text" id="hobby" name="hobby">'+'<br><button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" class="trigger" style="display:none" id="check_out_button">Check out</button>')
+    markerLayer.addTo(map);
     $.get('/get_nearby', {city : city}, function(res){
         console.log(res.reply);
         nearby_users = res.reply;
