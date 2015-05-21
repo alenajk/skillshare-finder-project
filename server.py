@@ -17,14 +17,19 @@ def index():
 
     # Check to see if logged in. If logged in, check to see if checked in,
     # and if so, pass checkedin=[lat,lon,checkin_id] to homepage template
+
     checkedin=None
-    if session['email']:
+    # *********
+    if 'email' in session.keys():
         user_id=User.query.filter_by(email=session['email']).one().user_id
         checkedin = CheckIn.query.filter_by(user_id=user_id).all()
         if checkedin:
             # Make sure I'm getting the most recent checkin
             # Order by reverse ID
+            print "checked in list: ", checkedin
+            # iterate through and check to see if checked in?
             checkedin = checkedin[-1].checked_in
+            print checkedin
         if checkedin == True:
             check_in_object = CheckIn.query.filter_by(user_id=user_id).all()[-1]
             lat = check_in_object.lat
@@ -79,7 +84,9 @@ def login():
             return redirect('/register')
         else:
             if pw_in_db[0].password == password:
+                print "email: ", email
                 session['email'] = email
+                print session['email']
                 session['password'] = password
                 user_id = User.query.filter_by(email=email).one().user_id
                 flash("You've been successfully logged in!")

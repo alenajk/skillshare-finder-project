@@ -1,6 +1,6 @@
 <h3>Skillshare finder</h3>
 <ul>
-    {% if session['email'] %}
+    {% if 'email' in session.keys() %}
         <li><a href="/logout">Log out</a></li>
     {% else %}
         <li><a href="/login">Login</a></li>

@@ -67,38 +67,50 @@ function dropNearbyPins(lat, lon) {
     };
 };
 
+// When user clicks the check-out button, show search bar again
+// and hide pins, in addition to loggin check-out action in db.
 function addCheckoutListener(new_id){
+    // remove all listeners on button
+    $('#map').off( "click", "#check_out_button");
     $('#map').on('click', '#check_out_button', function() {
+        checkedin = false;
         $('.leaflet-control-mapbox-geocoder').show();
         $('.leaflet-marker-icon').hide();
         $('.leaflet-popup').hide();
         $.get('/checkout', {check_in_id : new_id});
         $('#check_in_button').toggle(true);
         $('#check_out_button').toggle(false);
-        // remove marker instead of toggling buttons?
-        // show search bar
     });
 }
+
+function toggleButtons(){
+    if (checkedin){
+        $('#check_in_button').toggle(false);
+        $('#check_out_button').toggle(true);
+    }else{
+        $('#check_in_button').toggle(true);
+        $('#check_out_button').toggle(false);
+    };
+};
 
 // ****************************************************************************
 // If user is checked in anywhere, add pin to map
 
 if (checkedin){
+    
     map.setView([checkedin[1],checkedin[0]],15);
     addCheckoutListener(checkedin[2]);
     $('.leaflet-control-mapbox-geocoder').hide();
-    // remove geocodeController - search option
     // Listen for click on check-in button
     $('#map').on('click', '#check_in_button', function() {
         $.get('/checkin', {lat:checkedin[0], lon:checkedin[1]}, function(res){
             check_in_id_num = res.reply.check_in_id;
             addCheckoutListener(check_in_id_num);
         });
-        $('#check_in_button').toggle(false);
-        $('#check_out_button').toggle(true);
+        toggleButtons();
     });
     
-    // Add a pin to the map
+    // Add a pin to the map if already checked in
     L.mapbox.featureLayer({
     type: 'Feature',
     geometry: {
@@ -119,6 +131,7 @@ if (checkedin){
     .addTo(map);
 };
 
+
 geocoderControl.on('select', function(res) {
     latlon = res.feature.geometry.coordinates;
     console.log(latlon);
@@ -128,8 +141,11 @@ geocoderControl.on('select', function(res) {
         lon : latlon[1],
         city : city
     };
+    $('#map').off( "click", "#check_in_button");
     $('#map').on('click', '#check_in_button', function() {
+        checkedin = true;
         $('.leaflet-control-mapbox-geocoder').hide();
+        $('.leaflet-popup-close-button').hide();
         $.get('/checkin', loc, function(res){
             var check_in_id_num = res.reply.check_in_id;
             addCheckoutListener(check_in_id_num);
@@ -139,7 +155,7 @@ geocoderControl.on('select', function(res) {
     });
     console.log(latlon);
     console.log(location);
-    // Add a pin to the map
+    // Add a pin to the map where you searched
     L.mapbox.featureLayer({
     type: 'Feature',
     geometry: {
@@ -164,3 +180,4 @@ geocoderControl.on('select', function(res) {
         dropNearbyPins(latlon[0],latlon[1]);
     });
 });
+
