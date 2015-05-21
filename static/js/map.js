@@ -143,6 +143,10 @@ geocoderControl.on('select', function(res) {
     };
     $('#map').off( "click", "#check_in_button");
     $('#map').on('click', '#check_in_button', function() {
+        var hobby = document.getElementById("hobby").value
+        console.log(hobby);
+        loc['hobby'] = hobby;
+        console.log(loc);
         checkedin = true;
         $('.leaflet-control-mapbox-geocoder').hide();
         $('.leaflet-popup-close-button').hide();
@@ -172,7 +176,7 @@ geocoderControl.on('select', function(res) {
         'marker-size': 'large',
         'marker-color': '#2EB8B8',
     }
-}).bindPopup('<button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" class="trigger" style="display:none" id="check_out_button">Check out</button>')
+}).bindPopup('<p>What are you working on?</p><input type="text" id="hobby" name="hobby">'+'<br><button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" class="trigger" style="display:none" id="check_out_button">Check out</button>')
     .addTo(map);
     $.get('/get_nearby', {city : city}, function(res){
         console.log(res.reply);

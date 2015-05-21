@@ -121,9 +121,16 @@ def check_in():
     lat = float(request.args.get('lat'))
     lon = float(request.args.get('lon'))
     city = request.args.get('city')
+    
+    hobby = request.args.get('hobby')
+    hobby_object = Hobby(name=hobby)
+    db.session.add(hobby_object)
+    db.session.commit()
+
+    hobby_id = Hobby.query.filter_by(name=hobby).all()[0].hobby_id
     email = session['email']
     user_id = User.query.filter_by(email=email).one().user_id
-    checkin = CheckIn(user_id=user_id, lat=lat, lon=lon, city=city, checked_in=True)
+    checkin = CheckIn(user_id=user_id, lat=lat, lon=lon, city=city, hobby_id=hobby_id, checked_in=True)
 
     # adding the location info to the DB
     db.session.add(checkin)
