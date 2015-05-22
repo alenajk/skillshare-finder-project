@@ -64,7 +64,7 @@ function dropNearbyPins(lat, lon) {
             'marker-size': 'large',
             'marker-color': '#FF0066'
         }
-    }).bindPopup('<p>Username: '+selected_user.username+'<br>'+' Hobby: '+selected_user.hobby_name+'</p>'+'<button id="collaborate_button" class="trigger">Collaborate</button>').addTo(map);    
+    }).bindPopup('<p>Username: '+selected_user.username+'<br>'+' Hobby: '+selected_user.hobby_name+'</p>'+'<button id="collaborate_button" class="trigger" value="' + [selected_user.hobby_name,selected_user.lat,selected_user.lon] + '">Check in & collaborate</button>').addTo(map);    
     };
 };
 
@@ -150,8 +150,7 @@ geocoderControl.on('select', function(res) {
     $('#map').off( "click", "#check_in_button");
     $('#map').on('click', '#check_in_button', function() {
         var hobby = document.getElementById("hobby").value
-        console.log(hobby);
-        
+
         // Check to make sure user entered something in the text box
         // If empty string, alert user to enter something.
         if (hobby==""){
@@ -166,10 +165,36 @@ geocoderControl.on('select', function(res) {
                 var check_in_id_num = res.reply.check_in_id;
                 addCheckoutListener(check_in_id_num);
             });
+
+            // change to toggleButtons()
             $('#check_in_button').toggle(false);
             $('#check_out_button').toggle(true);
         };
+
     });
+
+    // Listener for #collaborate button
+    // Need to get lat/lon data from other user's pinm
+    $('#map').on('click', '#collaborate_button', function(){
+        // ************ Need to unpack the string to access individual elements ***********
+        var hobby = document.getElementById("collaborate_button").value
+        console.log(hobby);
+        console.log(typeof hobby);
+        // loc['hobby'] = hobby;
+        // console.log(loc);
+        // checkedin = true;
+        // $('.leaflet-control-mapbox-geocoder').hide();
+        // $('.leaflet-popup-close-button').hide();
+        // $.get('/checkin', loc, function(res){
+        //     var check_in_id_num = res.reply.check_in_id;
+        //     addCheckoutListener(check_in_id_num);
+        // });
+
+        //     // change to toggleButtons()
+        // $('#check_in_button').toggle(false);
+        // $('#check_out_button').toggle(true);
+    });
+    
     console.log(latlon);
     console.log(location);
     
@@ -198,6 +223,9 @@ geocoderControl.on('select', function(res) {
         nearby_users = res.reply;
         console.log(nearby_users);
         dropNearbyPins(latlon[0],latlon[1]);
+    });
+    $('#map').on('click', '#collaborate_button', function() {
+        // stuff
     });
 });
 

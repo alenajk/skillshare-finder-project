@@ -76,7 +76,7 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         pw_in_db = User.query.filter_by(email=email).all()
-        
+
         # Check to see if email exists in db
         if pw_in_db == []:
             flash("Looks like that email hasn't been registered yet.")
@@ -100,8 +100,7 @@ def login():
 def logout():
 
     session.clear()
-    # session['email'] = []
-    # session['password'] = []
+
     return redirect('/')
 
 @app.route('/get_nearby')
