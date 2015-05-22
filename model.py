@@ -74,7 +74,9 @@ class CheckIn(db.Model):
             'user_id' : self.user_id,
             'city' : self.city,
             'lat' : self.lat,
-            'lon' : self.lon
+            'lon' : self.lon,
+            'hobby_id' : self.hobby_id,
+            'hobby_name' : self.hobby.name
         }
     
     # def __repr__(self):

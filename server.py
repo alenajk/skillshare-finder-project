@@ -108,10 +108,15 @@ def logout():
 def get_nearby():
     
     city = request.args.get('city')
+    
+    # Find the CheckIn objects for currently checked in users in same city as searched
     active_nearby_users = CheckIn.query.filter_by(checked_in=True,city=city).all()
-
+    print "active_nearby_users: ", active_nearby_users 
+    print active_nearby_users[0], active_nearby_users[0].hobby_id
+    print active_nearby_users[0].to_dict()
     # Create a list of dictionaries containing nearby checked-in user location
     active_nearby_users_dicts = [user.to_dict() for user in active_nearby_users]
+    print "active_nearby_users_dicts ", active_nearby_users_dicts
 
     return jsonify(reply=active_nearby_users_dicts)
 

@@ -46,7 +46,7 @@ function dropNearbyPins(lat, lon) {
             selected_users.push(nearby_user);
         };
     };
-    console.log(selected_users);
+    console.log('selected users are ', selected_users);
     for (var i=0; i<selected_users.length; i++){
         var selected_user = selected_users[i];
         L.mapbox.featureLayer({
@@ -64,7 +64,7 @@ function dropNearbyPins(lat, lon) {
             'marker-size': 'large',
             'marker-color': '#FF0066'
         }
-    }).bindPopup('<p>User_id: '+selected_user.user_id+'</p>').addTo(map);    
+    }).bindPopup('<p>User_id: '+selected_user.user_id+'<br>'+' Hobby: '+selected_user.hobby_name+'</p>').addTo(map);    
     };
 };
 
@@ -193,9 +193,10 @@ geocoderControl.on('select', function(res) {
 });
     markerLayer.bindPopup('<p>What are you working on?</p><input type="text" id="hobby" name="hobby">'+'<br><button id="check_in_button" class="trigger">Check in here</button>'+'<button id="check_out_button" class="trigger" style="display:none" id="check_out_button">Check out</button>')
     markerLayer.addTo(map);
+
     $.get('/get_nearby', {city : city}, function(res){
-        console.log(res.reply);
         nearby_users = res.reply;
+        console.log(nearby_users);
         dropNearbyPins(latlon[0],latlon[1]);
     });
 });
