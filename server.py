@@ -76,8 +76,7 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         pw_in_db = User.query.filter_by(email=email).all()
-        print password
-        print pw_in_db[0].password
+        
         # Check to see if email exists in db
         if pw_in_db == []:
             flash("Looks like that email hasn't been registered yet.")
@@ -100,8 +99,9 @@ def login():
 @app.route('/logout')
 def logout():
 
-    session['email'] = []
-    session['password'] = []
+    session.clear()
+    # session['email'] = []
+    # session['password'] = []
     return redirect('/')
 
 @app.route('/get_nearby')
@@ -111,9 +111,7 @@ def get_nearby():
     
     # Find the CheckIn objects for currently checked in users in same city as searched
     active_nearby_users = CheckIn.query.filter_by(checked_in=True,city=city).all()
-    print "active_nearby_users: ", active_nearby_users 
-    print active_nearby_users[0], active_nearby_users[0].hobby_id
-    print active_nearby_users[0].to_dict()
+
     # Create a list of dictionaries containing nearby checked-in user location
     active_nearby_users_dicts = [user.to_dict() for user in active_nearby_users]
     print "active_nearby_users_dicts ", active_nearby_users_dicts

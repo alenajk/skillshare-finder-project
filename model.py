@@ -63,6 +63,8 @@ class CheckIn(db.Model):
     lon = db.Column(db.Float, nullable=False)
     checked_in = db.Column(db.Boolean, nullable=False)
 
+    # Define relationship to user
+    user = db.relationship("User", backref=db.backref("check_ins"))
     # Define relationship to hobby
     hobby = db.relationship("Hobby", backref=db.backref("check_ins"))
     # Define relationship to Location
@@ -76,7 +78,8 @@ class CheckIn(db.Model):
             'lat' : self.lat,
             'lon' : self.lon,
             'hobby_id' : self.hobby_id,
-            'hobby_name' : self.hobby.name
+            'hobby_name' : self.hobby.name,
+            'username' : self.user.name
         }
     
     # def __repr__(self):

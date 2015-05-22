@@ -64,7 +64,7 @@ function dropNearbyPins(lat, lon) {
             'marker-size': 'large',
             'marker-color': '#FF0066'
         }
-    }).bindPopup('<p>User_id: '+selected_user.user_id+'<br>'+' Hobby: '+selected_user.hobby_name+'</p>').addTo(map);    
+    }).bindPopup('<p>Username: '+selected_user.username+'<br>'+' Hobby: '+selected_user.hobby_name+'</p>'+'<button id="collaborate_button" class="trigger">Collaborate</button>').addTo(map);    
     };
 };
 
