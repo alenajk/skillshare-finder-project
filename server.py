@@ -137,9 +137,25 @@ def check_in():
     # adding the location info to the DB
     db.session.add(checkin)
     db.session.commit()
+    print checkin
     check_in_id = checkin.check_in_id
-    print check_in_id
-    reply = {'check_in_id' : check_in_id}
+    username = checkin.user.username
+    user_id = checkin.user_id
+    lat = checkin.lat
+    lon = checkin.lon
+    city = checkin.city
+    hobby = checkin.hobby.name
+
+    print "hi this is new stuff, ", check_in_id, username, hobby, city, lat, lon
+    reply = {
+            'checkinId' : check_in_id,
+            'username' : username,
+            'userId' : user_id,
+            'lat' : lat,
+            'lon' : lon,
+            'city' : city,
+            'hobby' : hobby
+            }
     return jsonify(reply=reply)
 
 @app.route('/checkout', methods=['GET','POST'])
