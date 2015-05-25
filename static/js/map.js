@@ -11,6 +11,7 @@ var output = document.getElementById('output');
 var map = L.mapbox.map('map', 'mapbox.streets');
 var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
 geocoderControl.addTo(map);
+var otherPin;
 
 function cityFromContext(context) {
     for(var i = 0; i < context.length; i++) {
@@ -83,7 +84,7 @@ function dropNearbyPins(lat, lon) {
 
     for (var m=0; m<uniqueLocations.length; m++){
         var uniqueLocation = uniqueLocations[m];
-        var otherPin = L.mapbox.featureLayer({
+        otherPin = L.mapbox.featureLayer({
             type: 'Feature',
             geometry: {
                 type: 'Point',
@@ -270,44 +271,58 @@ geocoderControl.on('select', function(res) {
         console.log(username,hobby,lat,lon,city);
 
         var loc = {
-        username : username,
         lat : lat,
         lon : lon,
         city : city,
         hobby : hobby
         };
+        console.log('eeeeeee ');
         console.log(loc);
 
         // Get value from hobby input field
-        if($(this).data-hobby==="None"){
+        if(loc.hobby==="none"){
             var hobby = document.getElementById("hobby").value;
             if (hobby==""){
                 alert("Please enter a hobby");
-            }else{
+            } else {
                 loc['hobby'] = hobby;
                 console.log(loc);  
+                checkIn(loc);
+                checkedin = true;
+                $('.leaflet-control-mapbox-geocoder').hide();
+                $('.leaflet-popup-close-button').hide();
+                toggleButtons();
+
+                checkedin = true;
+                
+                // Clear searched pin from map after collaborate/checkin
+                otherPin.clearLayers();
+                $('.leaflet-control-mapbox-geocoder').hide();
+                $('.leaflet-popup-close-button').hide();
+
+                $('.checkin-button').hide();
+                $('#checkout-button-'+username).show();
+                $('.info').hide();
             };
-            console.log(hobby);
+        } else {
+            // When collaborating
+            checkIn(loc);
+            checkedin = true;
+            $('.leaflet-control-mapbox-geocoder').hide();
+            $('.leaflet-popup-close-button').hide();
+            toggleButtons();
+
+            checkedin = true;
+            
+            // Clear searched pin from map after collaborate/checkin
+            myPin.clearLayers();
+            $('.leaflet-control-mapbox-geocoder').hide();
+            $('.leaflet-popup-close-button').hide();
+
+            $('.checkin-button').hide();
+            $('#checkout-button-'+username).show();
+            $('.info').hide();
         };
-
-        console.log(loc);
-        // Call checkIn function with loc as parameter
-        checkIn(loc);
-        checkedin = true;
-        $('.leaflet-control-mapbox-geocoder').hide();
-        $('.leaflet-popup-close-button').hide();
-        toggleButtons();
-
-        checkedin = true;
-        
-        // Clear searched pin from map after collaborate/checkin
-        myPin.clearLayers();
-        $('.leaflet-control-mapbox-geocoder').hide();
-        $('.leaflet-popup-close-button').hide();
-
-        $('.checkin-button').hide();
-        $('#checkout-button-'+username).show();
-        $('.info').hide();
     });
 
     $.get('/get_nearby', {city : city}, function(res){
