@@ -119,7 +119,7 @@ function dropNearbyPins(lat, lon) {
         stringToAdd+='</div>';
         console.log('stringToAdd in unique locations part of function ');
         console.log(stringToAdd);
-        otherPin.bindPopup(stringToAdd).addTo(map);    
+        otherPin.bindPopup(stringToAdd).addTo(map);   
     };
 };
 
@@ -171,7 +171,9 @@ function generateButtonHtml(username, hobby, lat, lon, city){
 // If user is checked in anywhere, add pin to map
 
 if (checkedin){
-    
+    console.log('if checkedin, print checkedin ');
+    console.log(checkedin);
+
     // Set map view depending on lat/lon of checked in location 
     map.setView([checkedin[1],checkedin[0]],15);
     
@@ -209,6 +211,8 @@ if (checkedin){
 })
     myPin.bindPopup('<button id="check_in_button" class="trigger" style="display:none">Check in here</button>'+'<button id="check_out_button" class="trigger" id="check_out_button">Check out</button>')
     myPin.addTo(map);
+    // instead call generateButtonHtml and then togglebuttons()?
+
 };
 
 
@@ -231,22 +235,22 @@ geocoderControl.on('select', function(res) {
     
     // Add a pin to the map where you searched
     var myPin = L.mapbox.featureLayer({
-    type: 'Feature',
-    geometry: {
-        type: 'Point',
-        coordinates: [
-          latlon[0],
-          latlon[1] 
-        ]
-    },
-    properties: {
-        title: 'You',
-        description: 'Latitude: ' + latlon[0] + 'Longitude: ' + latlon[1],
-        'marker-symbol': 'star-stroked',
-        'marker-size': 'large',
-        'marker-color': '#2EB8B8',
-    }
-});
+        type: 'Feature',
+        geometry: {
+            type: 'Point',
+            coordinates: [
+              latlon[0],
+              latlon[1] 
+            ]
+        },
+        properties: {
+            title: 'You',
+            description: 'Latitude: ' + latlon[0] + 'Longitude: ' + latlon[1],
+            'marker-symbol': 'star-stroked',
+            'marker-size': 'large',
+            'marker-color': '#2EB8B8',
+        }
+    });
     var stringToAdd = '<p>What are you working on?</p><input type="text" id="hobby" name="hobby">'+'<br>';
     console.log('hi');
     console.log(loc.lat);
@@ -259,7 +263,7 @@ geocoderControl.on('select', function(res) {
     // multiple event listeners from accumulating.
     $('#map').off( "click", ".checkin-button");
 
-    // *********** Checkin button listener ************
+    // *********** Checkin-button listener ************
 
     $('#map').on('click', '.checkin-button', function(){
         var button = $(this);
@@ -307,12 +311,10 @@ geocoderControl.on('select', function(res) {
         } else {
             // When collaborating
             checkIn(loc);
-            checkedin = true;
+            // checkedin = true;
             $('.leaflet-control-mapbox-geocoder').hide();
             $('.leaflet-popup-close-button').hide();
             toggleButtons();
-
-            checkedin = true;
             
             // Clear searched pin from map after collaborate/checkin
             myPin.clearLayers();
@@ -325,6 +327,11 @@ geocoderControl.on('select', function(res) {
         };
     });
 
+    $('#map').on('click', '.checkout-button', function(){
+        console.log('this is a print');
+        console.log($(this));
+        console.log();
+    });
     $.get('/get_nearby', {city : city}, function(res){
         nearby_users = res.reply;
         console.log(nearby_users);

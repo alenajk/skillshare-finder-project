@@ -16,7 +16,7 @@ def index():
     """Homepage"""
 
     # Check to see if logged in. If logged in, check to see if checked in,
-    # and if so, pass checkedin=[lat,lon,checkin_id] to homepage template
+    # and if so, pass checkedin to homepage template
 
     checkedin=None
     # *********
@@ -35,7 +35,10 @@ def index():
             lat = check_in_object.lat
             lon = check_in_object.lon
             checkin_id = check_in_object.check_in_id
-            checkedin = [lat,lon,checkin_id]
+            user_id = check_in_object.user_id
+            hobby_id = check_in_object.hobby_id
+            # City - str type not working in homepage.html variable def
+            checkedin = [lat,lon,checkin_id,user_id,hobby_id]
             print checkedin
         else:
             checkedin = 'false'
