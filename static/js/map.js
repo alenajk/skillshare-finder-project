@@ -271,10 +271,10 @@ geocoderControl.on('select', function(res) {
 
         // Create loc object to store the proper check in data
         var loc = {
-        lat : lat,
-        lon : lon,
-        city : city,
-        hobby : hobby
+            lat : lat,
+            lon : lon,
+            city : city,
+            hobby : hobby
         };
 
         if(loc.hobby==="none"){
@@ -303,10 +303,26 @@ geocoderControl.on('select', function(res) {
             checkIn(loc);
             $('.leaflet-control-mapbox-geocoder').hide();
             $('.leaflet-popup-close-button').hide();
-            toggleButtons();
             
-            // Clear searched pin from map after collaborate/checkin
+            // Clear other pins from map after collaborate/checkin
+            map.eachLayer(function(layer){ 
+                console.log('hi');
+                console.log([+lat,+lon]);
+                console.log(layer);
+                try{
+                    console.log('made it to try');
+                    var coordinates = layer.feature.geometry.coordinates;
+                    if(coordinates[0] != +lat && coordinates[1] != +lon){
+                        try{map.removeLayer(layer);}catch(e){console.log(e)};
+                    }   
+                } catch(TypeError){
+                    console.log('caught type error');
+                    // Suppress type error
+                }
+            });
+            // Clear searched pin
             myPin.clearLayers();
+            
             $('.leaflet-control-mapbox-geocoder').hide();
             $('.leaflet-popup-close-button').hide();
 
