@@ -3,11 +3,21 @@
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from model import User, Hobby, UserHobbyLevel, Location, CheckIn, connect_to_db, db
+from twilio.rest import TwilioRestClient
+import os
+
+# Get keys into program
+account_sid = os.environ.get("TWILIO_ACCOUNT_SID")
+auth_token = os.environ.get("TWILIO_AUTH_TOKEN")
+
+if not account_sid:
+    print "Run your script to source the secrets!"
+
+# Set up Twilio's python helper client
+client = TwilioRestClient(account_sid, auth_token)
 
 app = Flask(__name__)
-
 app.secret_key = "ABC"
-
 app.jinja_env.undefined = StrictUndefined
 
 
@@ -134,7 +144,8 @@ def check_in():
 
     hobby_id = Hobby.query.filter_by(name=hobby).all()[0].hobby_id
     email = session['email']
-    user_id = User.query.filter_by(email=email).one().user_id
+    user = User.query.filter_by(email=email).one()
+    user_id = user.user_id
     checkin = CheckIn(user_id=user_id, lat=lat, lon=lon, city=city, hobby_id=hobby_id, checked_in=True)
 
     # adding the location info to the DB
@@ -149,7 +160,6 @@ def check_in():
     city = checkin.city
     hobby = checkin.hobby.name
 
-    print "hi this is new stuff, ", check_in_id, username, hobby, city, lat, lon
     reply = {
             'checkinId' : check_in_id,
             'username' : username,
@@ -159,6 +169,17 @@ def check_in():
             'city' : city,
             'hobby' : hobby
             }
+
+    # Send a message if collaborating
+    other_username = request.args.get('other_username')
+    print other_username
+    other_user = User.query.filter_by(username=other_username).one()
+    if request.args.get('send_message'):
+        print "made it to the message stuff"
+        message = client.messages.create(body="User " +user.name+ " is on his/her way!",
+        to="+1"+str(other_user.phone),
+        from_="+16502156412")
+
     return jsonify(reply=reply)
 
 @app.route('/checkout', methods=['GET','POST'])

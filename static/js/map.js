@@ -278,6 +278,7 @@ geocoderControl.on('select', function(res) {
         };
 
         if(loc.hobby==="none"){
+            // If checking in through self pin
             // Get value from hobby input field
             var hobby = document.getElementById("hobby").value;
             if (hobby==""){
@@ -299,7 +300,10 @@ geocoderControl.on('select', function(res) {
                 $('.info').hide();
             };
         } else {
-            // When collaborating
+            // If checking in through other user's pin
+            
+            loc['send_message'] = true;
+            loc['other_username'] = username;
             checkIn(loc);
             $('.leaflet-control-mapbox-geocoder').hide();
             $('.leaflet-popup-close-button').hide();
@@ -322,7 +326,7 @@ geocoderControl.on('select', function(res) {
             });
             // Clear searched pin
             myPin.clearLayers();
-            
+
             $('.leaflet-control-mapbox-geocoder').hide();
             $('.leaflet-popup-close-button').hide();
 
