@@ -2,8 +2,6 @@
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
 
-var loc = {}; // don't need?
-var nearby_users = [];
 var latlon = [];
 var markerLayer
 console.log(checkedin);
@@ -36,16 +34,16 @@ function haversine(lat1, lon1, lat2, lon2){
     return d
 };
 
-function dropNearbyPins(lat, lon) {
-    selected_users = [];
-    for (var i=0; i<nearby_users.length; i++){
-        var nearby_user = nearby_users[i];
-        var dist = haversine(latlon[0],latlon[1],nearby_user.lat, nearby_user.lon);
+function dropNearbyPins(nearbyUsers, lat, lon) {
+    selectedUsers = [];
+    for (var i=0; i<nearbyUsers.length; i++){
+        var nearbyUser = nearbyUsers[i];
+        var dist = haversine(latlon[0],latlon[1],nearbyUser.lat, nearbyUser.lon);
         if (dist<1){
-            selected_users.push(nearby_user);
+            selectedUsers.push(nearbyUser);
         };
     };
-    // console.log('selected users are ', selected_users);
+    // console.log('selected users are ', selectedUsers);
     
     var uniqueLocations = [];
 
@@ -59,8 +57,8 @@ function dropNearbyPins(lat, lon) {
         return false;
     };
 
-    for (var i=0; i<selected_users.length; i++){
-        var selected_user = selected_users[i];
+    for (var i=0; i<selectedUsers.length; i++){
+        var selected_user = selectedUsers[i];
         var loc = latLonInUniqueLocations(selected_user.lat, selected_user.lon);
         // loc is false if not in array 
         if(loc){
@@ -224,6 +222,7 @@ geocoderControl.on('select', function(res) {
     };
     
     latlon = res.feature.geometry.coordinates;
+
     var city = cityFromContext(res.feature.context);
     var loc = {
         lat : latlon[0],
@@ -253,7 +252,6 @@ geocoderControl.on('select', function(res) {
     stringToAdd+=generateButtonHtml('self','none',loc.lat,loc.lon,city);
     myPin.bindPopup(stringToAdd);
     myPin.addTo(map);
-
 
     // Deactivate any current event listeners for check-in button in order to prevent
     // multiple event listeners from accumulating.
@@ -335,8 +333,7 @@ geocoderControl.on('select', function(res) {
 
     // Get nearby checked-in users and all dropNearbyPins function
     $.get('/get_nearby', {city : city}, function(res){
-        nearby_users = res.reply;
-        dropNearbyPins(latlon[0],latlon[1]);
+        dropNearbyPins(res.reply,latlon[0],latlon[1]);
     });
 });
 
