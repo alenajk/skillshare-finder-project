@@ -12,6 +12,7 @@ var map = L.mapbox.map('map', 'mapbox.streets');
 var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
 geocoderControl.addTo(map);
 var otherPin;
+var myPin;
 
 function cityFromContext(context) {
     for(var i = 0; i < context.length; i++) {
@@ -24,7 +25,6 @@ function cityFromContext(context) {
 };
 
 function haversine(lat1, lon1, lat2, lon2){
-    console.log(lat1, lon1, lat2, lon2);
     var r = 6372.8 // Earth radius in km
     var dlat = (lat2-lat1)*Math.PI/180;
     var dlon = (lon2-lon1)*Math.PI/180;
@@ -33,7 +33,6 @@ function haversine(lat1, lon1, lat2, lon2){
             Math.sin(dlon/2) * Math.sin(dlon/2);
     var c = 2 * Math.asin(Math.sqrt(a));
     var d = r * c;
-    console.log(d);
     return d
 };
 
@@ -42,12 +41,11 @@ function dropNearbyPins(lat, lon) {
     for (var i=0; i<nearby_users.length; i++){
         var nearby_user = nearby_users[i];
         var dist = haversine(latlon[0],latlon[1],nearby_user.lat, nearby_user.lon);
-        console.log(nearby_user,dist);
         if (dist<1){
             selected_users.push(nearby_user);
         };
     };
-    console.log('selected users are ', selected_users);
+    // console.log('selected users are ', selected_users);
     
     var uniqueLocations = [];
 
@@ -75,8 +73,8 @@ function dropNearbyPins(lat, lon) {
             };
             uniqueLocations.push(uniqueLocation);
         };
-        console.log(uniqueLocations);
-        console.log(uniqueLocations[0].users.length);
+        // console.log(uniqueLocations);
+        // console.log(uniqueLocations[0].users.length);
     };
         // if so, get that pin by unique identifier (title?) - and append to div
         // else drop a pin
@@ -105,12 +103,12 @@ function dropNearbyPins(lat, lon) {
             var user = uniqueLocation.users[l];
             usernames.push(user.username);
         };
-        console.log(usernames);
+        // console.log(usernames);
         var stringToAdd = '<div class="users">';
         for (var z=0; z<uniqueLocation.users.length; z++){
             var user = uniqueLocation.users[z];
-            console.log('string to add initially ');
-            console.log(stringToAdd);
+            // console.log('string to add initially ');
+            // console.log(stringToAdd);
             stringToAdd+='<p class="info">Username: '+user.username+'<br>'+' Hobby: '+user.hobby_name+'</p>';  
             stringToAdd+=generateButtonHtml(user.username,user.hobby_name,user.lat,user.lon,user.city);
         };
@@ -138,7 +136,7 @@ function addCheckoutListeners(checkinId){
         $('.leaflet-control-mapbox-geocoder').show();
         $('.leaflet-marker-icon').hide()
         $('.leaflet-popup').hide();
-        console.log(checkinId);
+        // console.log(checkinId);
         $.get('/checkout', {check_in_id : checkinId});
     });
 };
@@ -219,7 +217,10 @@ if (checkedin){
 geocoderControl.on('select', function(res) {
     // Clear all markers when re-selecting so users may not check in multiple times
     if (myPin){
-        myPin.clearLayers()
+        myPin.clearLayers();
+    };
+    if (otherPin){
+        otherPin.clearLayers();
     };
     
     latlon = res.feature.geometry.coordinates;
@@ -231,7 +232,7 @@ geocoderControl.on('select', function(res) {
     };    
 
     // Add a pin to the map where you searched
-    var myPin = L.mapbox.featureLayer({
+    myPin = L.mapbox.featureLayer({
         type: 'Feature',
         geometry: {
             type: 'Point',
@@ -310,11 +311,7 @@ geocoderControl.on('select', function(res) {
             
             // Clear other pins from map after collaborate/checkin
             map.eachLayer(function(layer){ 
-                console.log('hi');
-                console.log([+lat,+lon]);
-                console.log(layer);
                 try{
-                    console.log('made it to try');
                     var coordinates = layer.feature.geometry.coordinates;
                     if(coordinates[0] != +lat && coordinates[1] != +lon){
                         try{map.removeLayer(layer);}catch(e){console.log(e)};
