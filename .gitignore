@@ -1,0 +1,4 @@
+*.pyc
+env/
+twilio_secrets.sh
+skillshare.db
