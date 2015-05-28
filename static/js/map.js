@@ -2,7 +2,6 @@
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
 
-var latlon = [];
 var markerLayer
 console.log(checkedin);
 var output = document.getElementById('output');
@@ -38,7 +37,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
     selectedUsers = [];
     for (var i=0; i<nearbyUsers.length; i++){
         var nearbyUser = nearbyUsers[i];
-        var dist = haversine(latlon[0],latlon[1],nearbyUser.lat, nearbyUser.lon);
+        var dist = haversine(lat,lon,nearbyUser.lat, nearbyUser.lon);
         if (dist<1){
             selectedUsers.push(nearbyUser);
         };
@@ -221,7 +220,7 @@ geocoderControl.on('select', function(res) {
         otherPin.clearLayers();
     };
     
-    latlon = res.feature.geometry.coordinates;
+    var latlon = res.feature.geometry.coordinates;
 
     var city = cityFromContext(res.feature.context);
     var loc = {
