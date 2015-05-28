@@ -2,9 +2,7 @@
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
 
-var markerLayer
 console.log(checkedin);
-var output = document.getElementById('output');
 var map = L.mapbox.map('map', 'mapbox.streets');
 var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
 geocoderControl.addTo(map);
@@ -73,10 +71,8 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
         // console.log(uniqueLocations);
         // console.log(uniqueLocations[0].users.length);
     };
-        // if so, get that pin by unique identifier (title?) - and append to div
-        // else drop a pin
-        // for each latlon in dictionary /object, drop a pin
-
+        
+    // for each latlon in dictionary /object, drop a pin
     for (var m=0; m<uniqueLocations.length; m++){
         var uniqueLocation = uniqueLocations[m];
         otherPin = L.mapbox.featureLayer({
@@ -125,15 +121,12 @@ function addCheckoutListeners(checkinId){
         $('.leaflet-marker-icon').hide();
         $('.leaflet-popup').hide();
         $.get('/checkout', {check_in_id : checkinId});
-        // $('#solo-checkin-button').toggle(true);
-        // $('#solo-checkout-button').toggle(false);
     });
     $('#map').on('click', '.checkout-button', function(){
         checkedin = false;
         $('.leaflet-control-mapbox-geocoder').show();
         $('.leaflet-marker-icon').hide()
         $('.leaflet-popup').hide();
-        // console.log(checkinId);
         $.get('/checkout', {check_in_id : checkinId});
     });
 };
