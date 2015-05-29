@@ -17,7 +17,6 @@ class User(db.Model):
     password = db.Column(db.String(30))
     email = db.Column(db.String(30))
     phone = db.Column(db.Integer)
-    contact_pref = db.Column(db.String(10))
 
     def __repr__(self):
         return "<User user_id:%s name=%s" % (self.user_id, self.name)
@@ -32,20 +31,19 @@ class Hobby(db.Model):
     def __repr__(self):
         return "<Hobby hobby_id=%s name=%s" % (self.hobby_id, self.name)
 
-class UserHobbyLevel(db.Model):
+class UserHobby(db.Model):
 
-    __tablename__ = "users_hobbies_levels"
+    __tablename__ = "users_hobbies"
 
-    user_hobby_level_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_hobby_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     hobby_id = db.Column(db.Integer, db.ForeignKey('hobbies.hobby_id'), nullable=False)
-    level = db.Column(db.Integer, nullable=False)
 
     # Define relationship to hobby
-    hobby = db.relationship("Hobby", backref=db.backref("users_hobbies_levels"))
+    hobby = db.relationship("Hobby", backref=db.backref("users_hobbies"))
 
     def __repr__(self):
-        return "<UserHobbyLevel user_id=%s hobby name=%s level=%s" % (self.user_id, self.hobby.name)
+        return "<UserHobby user_id=%s hobby name=%s" % (self.user_id, self.hobby.name)
 
 class CheckIn(db.Model):
 
@@ -55,9 +53,8 @@ class CheckIn(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'))
     hobby_id = db.Column(db.Integer, db.ForeignKey('hobbies.hobby_id'))
-    level = db.Column(db.Integer)
-    check_in_time = db.Column(db.DateTime)
-    check_in_duration = db.Column(db.Float)
+    # check_in_time = db.Column(db.DateTime)
+    # check_in_duration = db.Column(db.Float)
     city = db.Column(db.String(30))
     lat = db.Column(db.Float, nullable=False)
     lon = db.Column(db.Float, nullable=False)
@@ -90,10 +87,10 @@ class Location(db.Model):
     __tablename__ = "locations"
 
     location_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    # city = db.Column(db.String(30))
     location_type = db.Column(db.String(20))
     lat = db.Column(db.Float, nullable=False)
     lon = db.Column(db.Float, nullable=False)
+    city = db.Column(db.String(30))
 
     def __repr__(self):
         return "<Location location_id=%s location_type=%s lat=%s lon=%s" % (self.location_id, self.location_type, self.lat, self.lon)

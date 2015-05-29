@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
-from model import User, Hobby, UserHobbyLevel, Location, CheckIn, connect_to_db, db
+from model import User, Hobby, UserHobby, Location, CheckIn, connect_to_db, db
 from twilio.rest import TwilioRestClient
 import os
 
@@ -29,7 +29,7 @@ def index():
     # and if so, pass checkedin to homepage template
 
     checkedin=None
-    # *********
+
     if 'email' in session.keys():
         user_id=User.query.filter_by(email=session['email']).one().user_id
         checkedin = CheckIn.query.filter_by(user_id=user_id).all()
@@ -64,7 +64,6 @@ def register():
         password = request.form.get('password')
         email = request.form.get('email')
         phone = request.form.get('phone')
-        pref = request.form.get('pref')
 
         temp = User.query.filter_by(email=email).all()
 
@@ -74,7 +73,7 @@ def register():
         else:
             # Create instance of User class with provided info and add to db
             user = User(name=name, username=username, password=password, 
-                email=email, phone=phone, contact_pref=pref)
+                email=email, phone=phone)
             db.session.add(user)
             db.session.commit()
             flash('You were successfully registered!')
@@ -115,6 +114,25 @@ def logout():
     session.clear()
 
     return redirect('/')
+
+@app.route('/users/<int:user_id>')
+def show_user_profile(user_id):
+
+    user = User.query.filter_by(user_id=user_id).one()
+    print "user: ", user
+    hobbies = UserHobby.query.filter_by(user_id=user_id).all()
+    print "hobbies: ", hobbies
+    all_hobbies = Hobby.query.all()
+    print "all hobbies in database: "
+    hobby_names = []
+
+    for hobby in all_hobbies:
+        print hobby.name
+        hobby_names.append(hobby.name)
+
+    print "hobby names: ", hobby_names
+
+    return render_template("user_profile.html", user=user, hobbies=hobbies, hobby_names=hobby_names)
 
 @app.route('/get_nearby')
 def get_nearby():
