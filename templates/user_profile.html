@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block head %}
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+{% endblock %}
+
+{% block body %}
+    <p>Hello!</p>
+    {% if 'email' in session.keys() %}
+        <ul>
+            <li>Name: {{ user.name }}
+            <li>Username: {{ user.username }}</li>
+            {% if hobbies %}
+                <li>Saved hobbies: {{ hobbies }}</li>
+            {% endif %}
+        </ul>
+        <br>
+        <p>Would you like to add a new hobby to your favorites?</p>
+        <form action="/add-hobby" method="POST">
+            <p><label>Please select an existing hobby</label>
+            <select>
+            {% for hobby in hobby_names %}
+                <option value="{{ hobby }}">{{ hobby }}</option>
+            {% endfor %}
+            </select>
+            </p>
+            <input type="submit" value="Add to profile">
+        </form>
+    {% endif %}
+{% endblock %}
