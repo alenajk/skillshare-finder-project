@@ -139,9 +139,9 @@ def add_hobby():
     if 'hobbysubmit' in request.form:
         # Get hobby and add to db
         hobby = request.form.get('hobby')
-        hobby_in_db = Hobby.query.filter_by(name=hobby).one()
-        hobby_id = hobby_in_db.hobby_id
-        print "hobby to add is: ", hobby, hobby_id
+        hobby_id = Hobby.query.filter_by(name=hobby).one().hobby_id
+
+        # Add new entry to users_hobbies table in db
         new_user_hobby = UserHobby(user_id=user.user_id, hobby_id=hobby_id)
         db.session.add(new_user_hobby)
 
@@ -149,6 +149,22 @@ def add_hobby():
         # Get newhobby and add hobby to hobbies table 
         # AND new entry to users_hobbies table
         hobby = request.form.get('newhobby')
+
+        # Check to make sure hobby doesn't already exist in table
+        if Hobby.query.filter_by(name=hobby).all():
+            flash ("That hobby appears to already exist!")
+            return redirect('/users/profile')
+
+        # Add new hobby to hobbies table in db
+        new_hobby = Hobby(name=hobby)
+        db.session.add(new_hobby)
+        db.session.commit()
+
+        # Find hobby_id of newly added hobby
+        hobby_id = Hobby.query.filter_by(name=hobby).one().hobby_id
+        # Add new entry to users_hobbies table in db
+        new_user_hobby = UserHobby(user_id=user.user_id,hobby_id=hobby_id)
+        db.session.add(new_user_hobby)
         print "newhobby to add is: ", hobby
 
 
