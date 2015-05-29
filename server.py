@@ -133,11 +133,11 @@ def get_nearby():
 @app.route('/checkin', methods=['GET','POST'])
 def check_in():
 
-    lat = float(request.args.get('lat'))
-    lon = float(request.args.get('lon'))
-    city = request.args.get('city')
+    lat = float(request.form.get('lat'))
+    lon = float(request.form.get('lon'))
+    city = request.form.get('city')
     
-    hobby = request.args.get('hobby')
+    hobby = request.form.get('hobby')
     hobby_object = Hobby(name=hobby)
     db.session.add(hobby_object)
     db.session.commit()
@@ -171,10 +171,10 @@ def check_in():
             }
 
     # Send a message if collaborating
-    other_username = request.args.get('other_username')
+    other_username = request.form.get('other_username')
     print other_username
     other_user = User.query.filter_by(username=other_username).one()
-    if request.args.get('send_message'):
+    if request.form.get('send_message'):
         print "made it to the message stuff"
         message = client.messages.create(body="User " +user.name+ " is on his/her way!",
         to="+1"+str(other_user.phone),

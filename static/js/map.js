@@ -146,7 +146,7 @@ function toggleButtons(){
 // Sends location info to server, checks user in, and returns info about checkIn object as reply
 // Also calls addCheckOutListeners function with check_in_id
 function checkIn(location){
-    $.get('/checkin', location, function(res){
+    $.post('/checkin', location, function(res){
         var checkinId = res.reply.checkinId;
         addCheckoutListeners(checkinId);
     });
