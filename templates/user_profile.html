@@ -10,20 +10,27 @@
             <li>Name: {{ user.name }}
             <li>Username: {{ user.username }}</li>
             {% if hobbies %}
-                <li>Saved hobbies: {{ hobbies }}</li>
+                <li>Saved hobbies</li>
+                <ul>
+                {% for hobby in hobbies %}
+                    <li>{{ hobby.hobby.name }}</li>
+                {% endfor %}
+                </ul>
             {% endif %}
         </ul>
         <br>
         <p>Would you like to add a new hobby to your favorites?</p>
-        <form action="/add-hobby" method="POST">
+        <form action="/add_hobby" method="POST">
             <p><label>Please select an existing hobby</label>
-            <select>
+            <select name="hobby">
             {% for hobby in hobby_names %}
                 <option value="{{ hobby }}">{{ hobby }}</option>
             {% endfor %}
             </select>
-            </p>
-            <input type="submit" value="Add to profile">
+            <input type="submit" name="hobbysubmit" value="Add to profile">
+            <p><label>Can't find your hobby? Add it below!</label></p>
+            <input type="text" name="newhobby">
+            <input type="submit" name="newhobbysubmit" value="Add to profile">
         </form>
     {% endif %}
 {% endblock %}

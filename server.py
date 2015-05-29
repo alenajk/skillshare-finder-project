@@ -115,24 +115,47 @@ def logout():
 
     return redirect('/')
 
-@app.route('/users/<int:user_id>')
-def show_user_profile(user_id):
+@app.route('/users/profile')
+def show_user_profile():
 
-    user = User.query.filter_by(user_id=user_id).one()
-    print "user: ", user
-    hobbies = UserHobby.query.filter_by(user_id=user_id).all()
-    print "hobbies: ", hobbies
+    email = session['email']
+    user = User.query.filter_by(email=email).one()
+    hobbies = UserHobby.query.filter_by(user_id=user.user_id).all()
     all_hobbies = Hobby.query.all()
-    print "all hobbies in database: "
     hobby_names = []
 
     for hobby in all_hobbies:
         print hobby.name
         hobby_names.append(hobby.name)
 
-    print "hobby names: ", hobby_names
-
     return render_template("user_profile.html", user=user, hobbies=hobbies, hobby_names=hobby_names)
+
+@app.route('/add_hobby', methods=['GET','POST'])
+def add_hobby():
+
+    email = session['email']
+    user = User.query.filter_by(email=email).one()
+
+    if 'hobbysubmit' in request.form:
+        # Get hobby and add to db
+        hobby = request.form.get('hobby')
+        hobby_in_db = Hobby.query.filter_by(name=hobby).one()
+        hobby_id = hobby_in_db.hobby_id
+        print "hobby to add is: ", hobby, hobby_id
+        new_user_hobby = UserHobby(user_id=user.user_id, hobby_id=hobby_id)
+        db.session.add(new_user_hobby)
+
+    elif 'newhobbysubmit' in request.form:
+        # Get newhobby and add hobby to hobbies table 
+        # AND new entry to users_hobbies table
+        hobby = request.form.get('newhobby')
+        print "newhobby to add is: ", hobby
+
+
+    db.session.commit()    
+    flash("You added " + str(hobby) + " to your profile!")
+
+    return redirect('/users/profile') 
 
 @app.route('/get_nearby')
 def get_nearby():
