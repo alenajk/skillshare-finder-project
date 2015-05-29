@@ -277,12 +277,10 @@ geocoderControl.on('select', function(res) {
             } else {
                 loc['hobby'] = hobby;  
                 checkIn(loc);
-                $('.leaflet-control-mapbox-geocoder').hide();
-                $('.leaflet-popup-close-button').hide();
-                toggleButtons();
                 
                 // Clear searched pin from map after collaborate/checkin
                 otherPin.clearLayers();
+                
                 // Toggle button display and hide search bar / tooltip close functionality
                 $('.leaflet-control-mapbox-geocoder').hide();
                 $('.leaflet-popup-close-button').hide();
@@ -307,7 +305,6 @@ geocoderControl.on('select', function(res) {
                         try{map.removeLayer(layer);}catch(e){console.log(e)};
                     }   
                 } catch(TypeError){
-                    console.log('caught type error');
                     // Suppress type error
                 }
             });

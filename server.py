@@ -173,9 +173,8 @@ def check_in():
     # Send a message if collaborating
     other_username = request.form.get('other_username')
     print other_username
-    other_user = User.query.filter_by(username=other_username).one()
     if request.form.get('send_message'):
-        print "made it to the message stuff"
+        other_user = User.query.filter_by(username=other_username).one()
         message = client.messages.create(body="User " +user.name+ " is on his/her way!",
         to="+1"+str(other_user.phone),
         from_="+16502156412")
