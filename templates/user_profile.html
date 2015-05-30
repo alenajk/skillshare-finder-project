@@ -13,7 +13,7 @@
                 <li>Saved hobbies</li>
                 <ul>
                 {% for hobby in hobbies %}
-                    <li>{{ hobby.hobby.name }}</li>
+                    <li>{{ hobby.hobby.name }} (<button type="button" id="{{hobby.hobby_id}}">Remove</button>)</li>
                 {% endfor %}
                 </ul>
             {% endif %}
@@ -32,5 +32,14 @@
             <input type="text" name="newhobby">
             <input type="submit" name="newhobbysubmit" value="Add to profile">
         </form>
+        <script>
+            $(':button').on('click', function(){
+                var hobby_id = $(this).context.id;
+                console.log(hobby_id);
+                $.post('/remove_hobby', {'hobby_id' : hobby_id});
+                var url = "/users/profile";
+                $(location).attr('href',url);
+            });
+        </script>
     {% endif %}
 {% endblock %}

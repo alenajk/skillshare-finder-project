@@ -43,7 +43,7 @@ class UserHobby(db.Model):
     hobby = db.relationship("Hobby", backref=db.backref("users_hobbies"))
 
     def __repr__(self):
-        return "<UserHobby user_id=%s hobby name=%s" % (self.user_id, self.hobby.name)
+        return "<UserHobby user_id=%s hobby name=%s>" % (self.user_id, self.hobby.name)
 
 class CheckIn(db.Model):
 

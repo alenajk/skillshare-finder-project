@@ -3,6 +3,7 @@
 L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
 
 console.log(checkedin);
+console.log(hobbies);
 var map = L.mapbox.map('map', 'mapbox.streets');
 var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
 geocoderControl.addTo(map);
@@ -279,7 +280,9 @@ geocoderControl.on('select', function(res) {
                 checkIn(loc);
                 
                 // Clear searched pin from map after collaborate/checkin
-                otherPin.clearLayers();
+                if (otherPin){
+                    otherPin.clearLayers();
+                };
                 
                 // Toggle button display and hide search bar / tooltip close functionality
                 $('.leaflet-control-mapbox-geocoder').hide();

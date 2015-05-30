@@ -14,7 +14,7 @@
                 top:70px; 
                 bottom:10px; 
                 width:90%;
-                margin: 50px 80px 50px 50px; 
+                margin: 120px 80px 50px 90px; 
             }
             
             #header1 {
@@ -29,10 +29,20 @@
 {% block body %}
 {% if 'email' in session.keys() %}
     <p>Are you checked in anywhere? {{checkedin}} </p>
+    
+    {% if hobbies %}
+        <p>hobbies: {{ hobbies }}</p>
+    {% endif %}
+    
     <div id='map'></div>
     <script>
         var checkedin = {{ checkedin }};
     </script>
+    {% if hobbies %}
+        <script>
+            var hobbies = {{ hobbies }};
+        </script>    
+    {% endif %}
     <script src="/static/js/map.js"></script>
 {% else %}
 <h1>Homepage!</h1>

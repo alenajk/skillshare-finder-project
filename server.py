@@ -33,6 +33,12 @@ def index():
     if 'email' in session.keys():
         user_id=User.query.filter_by(email=session['email']).one().user_id
         checkedin = CheckIn.query.filter_by(user_id=user_id).all()
+        hobbies = UserHobby.query.filter_by(user_id=user_id).all()
+        hobby_ids = []
+        for hobby in hobbies:
+            hobby_ids.append(hobby.hobby_id)
+        print hobbies, hobby_ids
+        
         if checkedin:
             # Make sure I'm getting the most recent checkin
             # Order by reverse ID
@@ -52,7 +58,7 @@ def index():
             print checkedin
         else:
             checkedin = 'false'
-    return render_template("homepage.html", checkedin=checkedin)
+    return render_template("homepage.html", checkedin=checkedin, hobbies=hobby_ids)
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -172,6 +178,25 @@ def add_hobby():
     flash("You added " + str(hobby) + " to your profile!")
 
     return redirect('/users/profile') 
+
+@app.route('/remove_hobby', methods=['GET','POST'])
+def remove_hobby():
+
+    email = session['email']
+    user = User.query.filter_by(email=email).one()
+    user_id = user.user_id
+
+    hobby_id = request.form.get('hobby_id')
+    hobby = Hobby.query.filter_by(hobby_id=hobby_id).one().name
+    user_hobby = UserHobby.query.filter_by(user_id=user_id,hobby_id=hobby_id).one()
+    print "user hobby: ", user_hobby.user_id
+
+    # Change user_id to 0 in db
+    user_hobby.user_id = 0
+    db.session.commit()
+
+    flash('You removed ' + hobby + ' from your favorites.')
+    return redirect('/users/profile')
 
 @app.route('/get_nearby')
 def get_nearby():
