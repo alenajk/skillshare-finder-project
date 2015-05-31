@@ -34,9 +34,9 @@ def index():
         user_id=User.query.filter_by(email=session['email']).one().user_id
         checkedin = CheckIn.query.filter_by(user_id=user_id).all()
         hobbies = UserHobby.query.filter_by(user_id=user_id).all()
-        hobby_ids = []
+        hobby_ids = {}
         for hobby in hobbies:
-            hobby_ids.append(hobby.hobby_id)
+            hobby_ids[str(hobby.hobby.name)] = hobby.hobby_id
         print hobbies, hobby_ids
         
         if checkedin:

@@ -3,7 +3,9 @@
 L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
 
 console.log(checkedin);
-console.log(hobbies);
+if(hobbies){
+    console.log(hobbies)
+};
 var map = L.mapbox.map('map', 'mapbox.streets');
 var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
 geocoderControl.addTo(map);
@@ -101,8 +103,6 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
         var stringToAdd = '<div class="users">';
         for (var z=0; z<uniqueLocation.users.length; z++){
             var user = uniqueLocation.users[z];
-            // console.log('string to add initially ');
-            // console.log(stringToAdd);
             stringToAdd+='<p class="info">Username: '+user.username+'<br>'+' Hobby: '+user.hobby_name+'</p>';  
             stringToAdd+=generateButtonHtml(user.username,user.hobby_name,user.lat,user.lon,user.city);
         };
@@ -242,9 +242,30 @@ geocoderControl.on('select', function(res) {
         }
     });
     var stringToAdd = '<p>What are you working on?</p><input type="text" id="hobby" name="hobby">'+'<br>';
+    var selectHtml = '<select id="selecthobby" name="selecthobby">'+'<option id="none" value="none">Or select a favorited hobby</option>'; 
+    
+    console.log('hobbies: ', hobbies);
+    for (var key in hobbies){
+        var hobby = key;
+        console.log('hi',hobby);
+        var selectOption = '<option id="'+key+'">'+key+'</option>';
+        console.log('selectOption: ', selectOption);
+        selectHtml+=selectOption;
+    };
+
+    selectHtml+='</select><br><br>'
+    stringToAdd+=selectHtml;
     stringToAdd+=generateButtonHtml('self','none',loc.lat,loc.lon,city);
     myPin.bindPopup(stringToAdd);
     myPin.addTo(map);
+
+    $('#map').on('change', '#selecthobby', function(){
+        var selected = $('#selecthobby').find(":selected").text();
+        if((selected)!='Or select a favorited hobby'){
+            console.log(selected);
+            document.getElementById("hobby").value=selected;
+        };
+    });
 
     // Deactivate any current event listeners for check-in button in order to prevent
     // multiple event listeners from accumulating.

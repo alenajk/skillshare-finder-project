@@ -40,7 +40,7 @@
     </script>
     {% if hobbies %}
         <script>
-            var hobbies = {{ hobbies }};
+            var hobbies = {{ hobbies | safe }};
         </script>    
     {% endif %}
     <script src="/static/js/map.js"></script>
