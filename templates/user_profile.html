@@ -37,6 +37,7 @@
                 var hobby_id = $(this).context.id;
                 console.log(hobby_id);
                 $.post('/remove_hobby', {'hobby_id' : hobby_id});
+                // Reload the page so that newly removed hobby is no longer visible
                 var url = "/users/profile";
                 $(location).attr('href',url);
             });

@@ -99,7 +99,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
             var user = uniqueLocation.users[l];
             usernames.push(user.username);
         };
-        // console.log(usernames);
+        // console.log("usernames: ",usernames);
         var stringToAdd = '<div class="users">';
         for (var z=0; z<uniqueLocation.users.length; z++){
             var user = uniqueLocation.users[z];
@@ -344,7 +344,7 @@ geocoderControl.on('select', function(res) {
         };
     });
 
-    // Get nearby checked-in users and all dropNearbyPins function
+    // Get nearby checked-in users and call dropNearbyPins function
     $.get('/get_nearby', {city : city}, function(res){
         dropNearbyPins(res.reply,latlon[0],latlon[1]);
     });

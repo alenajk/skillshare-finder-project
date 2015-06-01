@@ -30,11 +30,12 @@ def index():
 
     checkedin=None
 
+    hobby_ids = {}
+
     if 'email' in session.keys():
         user_id=User.query.filter_by(email=session['email']).one().user_id
         checkedin = CheckIn.query.filter_by(user_id=user_id).all()
         hobbies = UserHobby.query.filter_by(user_id=user_id).all()
-        hobby_ids = {}
         for hobby in hobbies:
             hobby_ids[str(hobby.hobby.name)] = hobby.hobby_id
         print hobbies, hobby_ids
@@ -82,8 +83,8 @@ def register():
                 email=email, phone=phone)
             db.session.add(user)
             db.session.commit()
-            flash('You were successfully registered!')
-            return redirect('/')
+            flash('You were successfully registered! You may now log in.')
+            return redirect('/login')
     
     return render_template('register.html')
 
@@ -219,10 +220,15 @@ def check_in():
     lon = float(request.form.get('lon'))
     city = request.form.get('city')
     
+    
+    # Check to see if hobby already exists in profile
     hobby = request.form.get('hobby')
-    hobby_object = Hobby(name=hobby)
-    db.session.add(hobby_object)
-    db.session.commit()
+    if Hobby.query.filter_by(name=hobby).all():
+        pass
+    else:
+        hobby_object = Hobby(name=hobby)
+        db.session.add(hobby_object)
+        db.session.commit()
 
     hobby_id = Hobby.query.filter_by(name=hobby).all()[0].hobby_id
     email = session['email']
@@ -254,7 +260,7 @@ def check_in():
 
     # Send a message if collaborating
     other_username = request.form.get('other_username')
-    print other_username
+    print "other username: ", other_username
     if request.form.get('send_message'):
         other_user = User.query.filter_by(username=other_username).one()
         message = client.messages.create(body="User " +user.name+ " is on his/her way!",
