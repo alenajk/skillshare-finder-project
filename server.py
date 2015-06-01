@@ -30,15 +30,15 @@ def index():
 
     checkedin=None
 
-    hobby_ids = {}
+    fav_hobby_ids = {}
 
     if 'email' in session.keys():
         user_id=User.query.filter_by(email=session['email']).one().user_id
         checkedin = CheckIn.query.filter_by(user_id=user_id).all()
-        hobbies = UserHobby.query.filter_by(user_id=user_id).all()
-        for hobby in hobbies:
-            hobby_ids[str(hobby.hobby.name)] = hobby.hobby_id
-        print hobbies, hobby_ids
+        fav_hobbies = UserHobby.query.filter_by(user_id=user_id).all()
+        for hobby in fav_hobbies:
+            fav_hobby_ids[str(hobby.hobby.name)] = hobby.hobby_id
+        print fav_hobbies, fav_hobby_ids
         
         if checkedin:
             # Make sure I'm getting the most recent checkin
@@ -59,7 +59,7 @@ def index():
             print checkedin
         else:
             checkedin = 'false'
-    return render_template("homepage.html", checkedin=checkedin, hobbies=hobby_ids)
+    return render_template("homepage.html", checkedin=checkedin, fav_hobbies=fav_hobby_ids)
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -127,15 +127,17 @@ def show_user_profile():
 
     email = session['email']
     user = User.query.filter_by(email=email).one()
-    hobbies = UserHobby.query.filter_by(user_id=user.user_id).all()
-    all_hobbies = Hobby.query.all()
-    hobby_names = []
+    fav_hobbies = UserHobby.query.filter_by(user_id=user.user_id).all()
+    fav_hobby_names = [f.hobby.name for f in fav_hobbies]
 
-    for hobby in all_hobbies:
+    hobbies = Hobby.query.all()
+    all_hobbies = []
+
+    for hobby in hobbies:
         print hobby.name
-        hobby_names.append(hobby.name)
+        all_hobbies.append(hobby.name)
 
-    return render_template("user_profile.html", user=user, hobbies=hobbies, hobby_names=hobby_names)
+    return render_template("user_profile.html", user=user, fav_hobby_names=fav_hobby_names, fav_hobbies=fav_hobbies, all_hobbies=all_hobbies)
 
 @app.route('/add_hobby', methods=['GET','POST'])
 def add_hobby():

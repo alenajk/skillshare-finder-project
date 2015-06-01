@@ -9,11 +9,12 @@
         <ul>
             <li>Name: {{ user.name }}
             <li>Username: {{ user.username }}</li>
-            {% if hobbies %}
+            {% if fav_hobbies %}
                 <li>Saved hobbies</li>
                 <ul>
-                {% for hobby in hobbies %}
-                    <li>{{ hobby.hobby.name }} (<button type="button" id="{{hobby.hobby_id}}">Remove</button>)</li>
+                {% for fav_hobby in fav_hobbies %}
+                    <li>{{ fav_hobby }}</li>
+                    <li>{{ fav_hobby.hobby.name }} (<button type="button" id="{{fav_hobby.hobby_id}}">Remove</button>)</li>
                 {% endfor %}
                 </ul>
             {% endif %}
@@ -21,10 +22,14 @@
         <br>
         <p>Would you like to add a new hobby to your favorites?</p>
         <form action="/add_hobby" method="POST">
+            
             <p><label>Please select an existing hobby</label>
             <select name="hobby">
-            {% for hobby in hobby_names %}
-                <option value="{{ hobby }}">{{ hobby }}</option>
+            
+            {% for hobby in all_hobbies %}
+                {% if hobby not in fav_hobby_names %}
+                    <option value="{{ hobby }}">{{ hobby }}</option>
+                {% endif %}
             {% endfor %}
             </select>
             <input type="submit" name="hobbysubmit" value="Add to profile">
@@ -35,7 +40,6 @@
         <script>
             $(':button').on('click', function(){
                 var hobby_id = $(this).context.id;
-                console.log(hobby_id);
                 $.post('/remove_hobby', {'hobby_id' : hobby_id});
                 // Reload the page so that newly removed hobby is no longer visible
                 var url = "/users/profile";

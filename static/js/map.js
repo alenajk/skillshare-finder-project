@@ -3,8 +3,8 @@
 L.mapbox.accessToken = 'pk.eyJ1IjoiZW5hamthbCIsImEiOiJIREZaeThRIn0.C31-vYXMj9y0TTujzEGNZQ';
 
 console.log(checkedin);
-if(hobbies){
-    console.log(hobbies)
+if(fav_hobbies){
+    console.log(fav_hobbies)
 };
 var map = L.mapbox.map('map', 'mapbox.streets');
 var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
@@ -244,10 +244,9 @@ geocoderControl.on('select', function(res) {
     var stringToAdd = '<p>What are you working on?</p><input type="text" id="hobby" name="hobby">'+'<br>';
     var selectHtml = '<select id="selecthobby" name="selecthobby">'+'<option id="none" value="none">Or select a favorited hobby</option>'; 
     
-    console.log('hobbies: ', hobbies);
-    for (var key in hobbies){
-        var hobby = key;
-        console.log('hi',hobby);
+    console.log('fav_hobbies: ', fav_hobbies);
+    for (var key in fav_hobbies){
+        var fav_hobby = key;
         var selectOption = '<option id="'+key+'">'+key+'</option>';
         console.log('selectOption: ', selectOption);
         selectHtml+=selectOption;
