@@ -13,7 +13,6 @@
                 <li>Saved hobbies</li>
                 <ul>
                 {% for fav_hobby in fav_hobbies %}
-                    <li>{{ fav_hobby }}</li>
                     <li>{{ fav_hobby.hobby.name }} (<button type="button" id="{{fav_hobby.hobby_id}}">Remove</button>)</li>
                 {% endfor %}
                 </ul>
@@ -23,17 +22,19 @@
         <p>Would you like to add a new hobby to your favorites?</p>
         <form action="/add_hobby" method="POST">
             
-            <p><label>Please select an existing hobby</label>
-            <select name="hobby">
-            
-            {% for hobby in all_hobbies %}
-                {% if hobby not in fav_hobby_names %}
-                    <option value="{{ hobby }}">{{ hobby }}</option>
-                {% endif %}
-            {% endfor %}
-            </select>
-            <input type="submit" name="hobbysubmit" value="Add to profile">
-            <p><label>Can't find your hobby? Add it below!</label></p>
+            {% if all_hobbies|length > fav_hobby_names|length %}
+                <p><label>Please select an existing hobby</label>
+                <select name="hobby">
+                
+                {% for hobby in all_hobbies %}
+                    {% if hobby not in fav_hobby_names %}
+                        <option value="{{ hobby }}">{{ hobby }}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+                <input type="submit" name="hobbysubmit" value="Add to profile">
+                <p><label>Can't find your hobby? Add it below!</label></p>
+            {% endif %}
             <input type="text" name="newhobby">
             <input type="submit" name="newhobbysubmit" value="Add to profile">
         </form>

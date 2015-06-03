@@ -122,6 +122,11 @@ def logout():
 
     return redirect('/')
 
+@app.route('/test')
+def test():
+
+    return render_template('maptest.html')
+
 @app.route('/users/profile')
 def show_user_profile():
 
