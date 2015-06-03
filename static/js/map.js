@@ -97,7 +97,8 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
                 title: 'Other',
                 'marker-symbol': 'pitch',
                 'marker-size': 'large',
-                'marker-color': '#FF0066'
+                'marker-color': '#FF0066',
+                'hobbies': []
             }
         };
         features.push(otherPin);
@@ -123,6 +124,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
                 "lon": user.lon,
                 "city": user.city
             };
+            otherPin.properties.hobbies.push(user.hobby_name);
         };
         stringToAdd+='</div>';
         otherPin.properties.description=stringToAdd;
@@ -384,7 +386,7 @@ function createCheckboxes() {
   var typesObj = {}, types = [];
   var features = map.featureLayer.getGeoJSON().features;
   for (var i = 0; i < features.length; i++) {
-    typesObj[features[i].properties['marker-symbol']] = true;
+    typesObj[features[i].properties['hobbies']] = true;
   }
   for (var k in typesObj) types.push(k);
 
@@ -421,7 +423,7 @@ function createCheckboxes() {
       // or number, it says if that is in a object.
       // 2 in { 2: true } // true
       // 2 in { } // false
-      return (feature.properties['marker-symbol'] in enabled);
+      return (feature.properties['hobbies'] in enabled);
     });
   }
 }
