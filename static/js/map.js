@@ -134,6 +134,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
     };
     console.log(geoObject)
     map.featureLayer.setGeoJSON(geoObject);
+    createCheckboxes();
 };
 
 // When user clicks the check-out button, show search bar again
@@ -375,7 +376,7 @@ geocoderControl.on('select', function(res) {
 //******** TESTING **********
 
 
-map.featureLayer.on('ready', function() {
+function createCheckboxes() {
     console.log('got here');
   // Collect the types of symbols in this layer. you can also just
   // hardcode an array of types if you know what you want to filter on,
@@ -423,5 +424,5 @@ map.featureLayer.on('ready', function() {
       return (feature.properties['marker-symbol'] in enabled);
     });
   }
-});
+}
 
