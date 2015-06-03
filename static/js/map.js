@@ -11,6 +11,7 @@ var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
 geocoderControl.addTo(map);
 var otherPin;
 var myPin;
+var locFromId = {};
 
 function cityFromContext(context) {
     for(var i = 0; i < context.length; i++) {
@@ -96,8 +97,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
                 title: 'Other',
                 'marker-symbol': 'pitch',
                 'marker-size': 'large',
-                'marker-color': '#FF0066',
-                'cat': []
+                'marker-color': '#FF0066'
             }
         };
         features.push(otherPin);
@@ -114,16 +114,26 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
         var stringToAdd = '<div class="users">';
         for (var z=0; z<uniqueLocation.users.length; z++){
             var user = uniqueLocation.users[z];
-            cat = otherPin.getGeoJSON().properties.cat;
-            console.log("******* ", cat, typeof cat);
-            cat.push(user.hobby_name);
-            console.log("******* ", cat, typeof cat);
             stringToAdd+='<p class="info">Username: '+user.username+'<br>'+' Hobby: '+user.hobby_name+'</p>';  
-            stringToAdd+=generateButtonHtml(user.username,user.hobby_name,user.lat,user.lon,user.city);
+            stringToAdd+=generateButtonHtml(user.username);
+            locFromId[user.username] = {
+                "username": user.username,
+                "hobby": user.hobby_name,
+                "lat": user.lat,
+                "lon": user.lon,
+                "city": user.city
+            };
         };
         stringToAdd+='</div>';
-        otherPin.bindPopup(stringToAdd).addTo(map);   
+        otherPin.properties.description=stringToAdd;
+        // otherPin.bindPopup(stringToAdd).addTo(map);   
     };
+    var geoObject = {
+        type: "FeatureCollection",
+        features: features
+    };
+    console.log(geoObject)
+    map.featureLayer.setGeoJSON(geoObject);
 };
 
 // When user clicks the check-out button, show search bar again
@@ -168,9 +178,8 @@ function checkIn(location){
     });
 };
 
-function generateButtonHtml(username, hobby, lat, lon, city){
-    var string = '<button class="checkin-button" id="checkin-button-'+username+'" class="trigger" data-username="'+username+'" data-hobby="'+hobby+'" data-lat="'+lat+'" data-lon="'+lon+'" data-city="'+city+'">Check in & Collaborate</button> <button class="trigger checkout-button" style="display:none" id="checkout-button-'+username+'">Check out</button>';
-    return string;
+function generateButtonHtml(username){
+    return '<button class="checkin-button" id="'+username+'">Check in & Collaborate</button> <button class="trigger checkout-button" style="display:none" id="checkout-button-'+username+'">Check out</button>';
 };
 
 //**************************************************************************
@@ -290,19 +299,10 @@ geocoderControl.on('select', function(res) {
     $('#map').on('click', '.checkin-button', function(){
         // Gather check in info from data attribute of clicked button
         var button = $(this);
-        var username = button.attr('data-username');
-        var hobby = button.attr('data-hobby');
-        var lat = button.attr('data-lat');
-        var lon = button.attr('data-lon');
-        var city = button.attr('data-city');
-
-        // Create loc object to store the proper check in data
-        var loc = {
-            lat : lat,
-            lon : lon,
-            city : city,
-            hobby : hobby
-        };
+        console.log(button);
+        var id = button.attr('id');
+        var loc = locFromId[id];
+        var username = loc['username'];
 
         if(loc.hobby==="none"){
             // If checking in through self pin

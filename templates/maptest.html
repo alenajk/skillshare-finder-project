@@ -38,7 +38,8 @@ var filters = document.getElementById('filters');
 // map.featureLayer to the variable you have assigned to your featureLayer.
 
 
-// map.featureLayer.on('ready', function() {
+map.featureLayer.on('ready', function() {
+  console.log('calling this');
 
 
   // Collect the types of symbols in this layer. you can also just
@@ -87,7 +88,7 @@ var filters = document.getElementById('filters');
       return (feature.properties['marker-symbol'] in enabled);
     });
   }
-// });
+});
 
 </script>
 </body>
