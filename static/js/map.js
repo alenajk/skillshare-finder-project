@@ -68,6 +68,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
             uniqueLocation.users.push(selected_user);
             } else {
             var uniqueLocation = {
+                address : selected_user.address,
                 lat : selected_user.lat,
                 lon : selected_user.lon,
                 users : [selected_user]
@@ -78,10 +79,10 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
         // console.log(uniqueLocations[0].users.length);
     };
         
-    // for each latlon in dictionary /object, drop a pin
-    
     // var marker_object_dict = { "type": "FeatureCollection"};
 
+    // for each latlon in dictionary /object, drop a pin
+    
     var features = [];
 
     for (var m=0; m<uniqueLocations.length; m++){
@@ -96,7 +97,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
                 ]
             },
             properties: {
-                // title: 'Other',
+                title: uniqueLocation.address,
                 'marker-symbol': 'pitch',
                 'marker-size': 'large',
                 'marker-color': '#FF0066',
@@ -124,7 +125,8 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
                 "hobby": user.hobby_name,
                 "lat": user.lat,
                 "lon": user.lon,
-                "city": user.city
+                "city": user.city,
+                "address": user.address
             };
             otherPin.properties.hobbies.push(user.hobby_name);
         };
