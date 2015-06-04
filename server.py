@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
-from model import User, Hobby, UserHobby, Location, CheckIn, connect_to_db, db
+from model import User, Hobby, UserHobby, CheckIn, connect_to_db, db
 from twilio.rest import TwilioRestClient
 import os
 
@@ -221,7 +221,7 @@ def check_in():
     lat = float(request.form.get('lat'))
     lon = float(request.form.get('lon'))
     city = request.form.get('city')
-    
+    address = request.form.get('address').split(',')[0]
     
     # Check to see if hobby already exists in profile
     hobby = request.form.get('hobby')
@@ -236,7 +236,7 @@ def check_in():
     email = session['email']
     user = User.query.filter_by(email=email).one()
     user_id = user.user_id
-    checkin = CheckIn(user_id=user_id, lat=lat, lon=lon, city=city, hobby_id=hobby_id, checked_in=True)
+    checkin = CheckIn(user_id=user_id, address=address, lat=lat, lon=lon, city=city, hobby_id=hobby_id, checked_in=True)
 
     # adding the location info to the DB
     db.session.add(checkin)

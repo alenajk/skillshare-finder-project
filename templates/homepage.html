@@ -32,7 +32,7 @@
         .filter-ui {
           background:#fff;
           position:absolute;
-          top:10px;
+          top:180px;
           right:10px;
           z-index:100;
           padding:10px;
@@ -41,11 +41,11 @@
     </style>
     <p>Are you checked in anywhere? {{checkedin}} Session: {{ session, session['email'], session['username'] }}</p>
     
-    {% if fav_hobbies %}
-        <p>fav_hobbies: {{ fav_hobbies }}</p>
-    {% endif %}
+    <!-- {% if fav_hobbies %} -->
+        <!-- <p>fav_hobbies: {{ fav_hobbies }}</p> -->
+    <!-- {% endif %} -->
 
-    <nav id='filters' class='filter-ui'></nav>
+    <nav id='filters' class='filter-ui'>NAVBAR</nav>
     <div id='map'></div>
     
     <script>

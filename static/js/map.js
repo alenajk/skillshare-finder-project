@@ -272,6 +272,8 @@ if (checkedin){
 
 geocoderControl.on('select', function(res) {
     // Clear all markers when re-selecting so users may not check in multiple times
+
+    console.log('res',res); 
     $('#filters').empty();
     if (myPin){
         myPin.clearLayers();
@@ -282,12 +284,17 @@ geocoderControl.on('select', function(res) {
     };
     
     var latlon = res.feature.geometry.coordinates;
+    
+    var address = res.feature.place_name;
+    console.log('address, ',address);
+
     var city = cityFromContext(res.feature.context);
 
     loc['lat']=latlon[0];
     loc['lon']=latlon[1];
     loc['city']=city;
     loc['hobby']='none';
+    loc['address'] = address;
 
     // Add a pin to the map where you searched
     myPin = L.mapbox.featureLayer({

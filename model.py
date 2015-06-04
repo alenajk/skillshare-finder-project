@@ -51,10 +51,8 @@ class CheckIn(db.Model):
 
     check_in_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'))
     hobby_id = db.Column(db.Integer, db.ForeignKey('hobbies.hobby_id'))
-    # check_in_time = db.Column(db.DateTime)
-    # check_in_duration = db.Column(db.Float)
+    address = db.Column(db.String(100))
     city = db.Column(db.String(30))
     lat = db.Column(db.Float, nullable=False)
     lon = db.Column(db.Float, nullable=False)
@@ -64,13 +62,12 @@ class CheckIn(db.Model):
     user = db.relationship("User", backref=db.backref("check_ins"))
     # Define relationship to hobby
     hobby = db.relationship("Hobby", backref=db.backref("check_ins"))
-    # Define relationship to Location
-    location = db.relationship("Location", backref=db.backref("check_ins"))
 
     def to_dict(self):
         return {
             'check_in_id' : self.check_in_id,
             'user_id' : self.user_id,
+            'address' : self.address,
             'city' : self.city,
             'lat' : self.lat,
             'lon' : self.lon,
@@ -79,21 +76,8 @@ class CheckIn(db.Model):
             'username' : self.user.username
         }
     
-    # def __repr__(self):
-        # return "<CheckIn user_id=%s hobby name=%s" % (self.user_id, self.hobby.name)
-
-class Location(db.Model):
-
-    __tablename__ = "locations"
-
-    location_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    location_type = db.Column(db.String(20))
-    lat = db.Column(db.Float, nullable=False)
-    lon = db.Column(db.Float, nullable=False)
-    city = db.Column(db.String(30))
-
     def __repr__(self):
-        return "<Location location_id=%s location_type=%s lat=%s lon=%s" % (self.location_id, self.location_type, self.lat, self.lon)
+        return "<CheckIn user_id=%s hobby name=%s address=%s" % (self.user_id, self.hobby.name, self.address)
 
 
 ############################################################
