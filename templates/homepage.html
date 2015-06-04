@@ -39,19 +39,20 @@
           border-radius:3px;
           }
     </style>
-    <p>Are you checked in anywhere? {{checkedin}} </p>
+    <p>Are you checked in anywhere? {{checkedin}} Session: {{ session, session['email'], session['username'] }}</p>
     
     {% if fav_hobbies %}
         <p>fav_hobbies: {{ fav_hobbies }}</p>
     {% endif %}
 
-    <nav id='filters' class='filter-ui'>filters/navbar</nav>
+    <nav id='filters' class='filter-ui'></nav>
     <div id='map'></div>
     
     <script>
         var filters = document.getElementById('filters');
         var checkedin = {{ checkedin }};
         var fav_hobbies = {{ fav_hobbies | safe }};
+        var session = {{ session | tojson }};
     </script>
     <script src="/static/js/map.js"></script>
 {% else %}

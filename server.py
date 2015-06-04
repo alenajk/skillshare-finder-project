@@ -102,11 +102,11 @@ def login():
             return redirect('/register')
         else:
             if pw_in_db[0].password == password:
-                print "email: ", email
                 session['email'] = email
-                print session['email']
                 session['password'] = password
                 user_id = User.query.filter_by(email=email).one().user_id
+                username = User.query.filter_by(email=email).one().username
+                session['username'] = username
                 flash("You've been successfully logged in!")
                 return redirect("/")
             else:
@@ -121,11 +121,6 @@ def logout():
     session.clear()
 
     return redirect('/')
-
-@app.route('/test')
-def test():
-
-    return render_template('maptest.html')
 
 @app.route('/users/profile')
 def show_user_profile():

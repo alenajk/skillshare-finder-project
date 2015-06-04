@@ -12,6 +12,8 @@ geocoderControl.addTo(map);
 var otherPin;
 var myPin;
 var locFromId = {};
+var loc = {};
+var otherPins = map.featureLayer;
 
 function cityFromContext(context) {
     for(var i = 0; i < context.length; i++) {
@@ -94,7 +96,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
                 ]
             },
             properties: {
-                title: 'Other',
+                // title: 'Other',
                 'marker-symbol': 'pitch',
                 'marker-size': 'large',
                 'marker-color': '#FF0066',
@@ -135,7 +137,8 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
         features: features
     };
     console.log(geoObject)
-    map.featureLayer.setGeoJSON(geoObject);
+    // map.featureLayer.setGeoJSON(geoObject);
+    otherPins.setGeoJSON(geoObject);
     createCheckboxes();
 };
 
@@ -184,6 +187,41 @@ function checkIn(location){
 function generateButtonHtml(username){
     return '<button class="checkin-button" id="'+username+'">Check in & Collaborate</button> <button class="trigger checkout-button" style="display:none" id="checkout-button-'+username+'">Check out</button>';
 };
+
+function createCheckboxes() {
+  var typesObj = {}, types = [];
+  var features = map.featureLayer.getGeoJSON().features;
+  for (var i = 0; i < features.length; i++) {
+    typesObj[features[i].properties['hobbies']] = true;
+  }
+  for (var k in typesObj) types.push(k);
+
+  var checkboxes = [];
+  for (var i = 0; i < types.length; i++) {
+    var item = filters.appendChild(document.createElement('div'));
+    var checkbox = item.appendChild(document.createElement('input'));
+    var label = item.appendChild(document.createElement('label'));
+    checkbox.type = 'checkbox';
+    checkbox.id = types[i];
+    checkbox.checked = true;
+    label.innerHTML = types[i];
+    label.setAttribute('for', types[i]);
+    checkbox.addEventListener('change', update);
+    checkboxes.push(checkbox);
+  };
+
+  function update() {
+    var enabled = {};
+    for (var i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked) enabled[checkboxes[i].id] = true;
+    }
+    map.featureLayer.setFilter(function(feature) {
+      return (feature.properties['hobbies'] in enabled);
+    });
+  };
+};
+
+
 
 //**************************************************************************
 // If user is checked in anywhere, add marker to map
@@ -234,21 +272,22 @@ if (checkedin){
 
 geocoderControl.on('select', function(res) {
     // Clear all markers when re-selecting so users may not check in multiple times
+    $('#filters').empty();
     if (myPin){
         myPin.clearLayers();
     };
-    if (otherPin){
-        otherPin.clearLayers();
+    if (otherPins){
+        otherPins.clearLayers();
+        console.log('otherPins, ', otherPins);
     };
     
     var latlon = res.feature.geometry.coordinates;
-
     var city = cityFromContext(res.feature.context);
-    var loc = {
-        lat : latlon[0],
-        lon : latlon[1],
-        city : city
-    };    
+
+    loc['lat']=latlon[0];
+    loc['lon']=latlon[1];
+    loc['city']=city;
+    loc['hobby']='none';
 
     // Add a pin to the map where you searched
     myPin = L.mapbox.featureLayer({
@@ -281,7 +320,7 @@ geocoderControl.on('select', function(res) {
 
     selectHtml+='</select><br><br>'
     stringToAdd+=selectHtml;
-    stringToAdd+=generateButtonHtml('self','none',loc.lat,loc.lon,city);
+    stringToAdd+=generateButtonHtml(session['username']);
     myPin.bindPopup(stringToAdd);
     myPin.addTo(map);
 
@@ -296,44 +335,47 @@ geocoderControl.on('select', function(res) {
     // Deactivate any current event listeners for check-in button in order to prevent
     // multiple event listeners from accumulating.
     $('#map').off( "click", ".checkin-button");
-
     // *********** Checkin-button listener ************
 
     $('#map').on('click', '.checkin-button', function(){
-        // Gather check in info from data attribute of clicked button
         var button = $(this);
-        console.log(button);
         var id = button.attr('id');
-        var loc = locFromId[id];
-        var username = loc['username'];
-
-        if(loc.hobby==="none"){
-            // If checking in through self pin
+ 
+        // If checking in through self pin
+        if(id===session['username']){
             // Get value from hobby input field
             var hobby = document.getElementById("hobby").value;
             if (hobby==""){
                 alert("Please enter a hobby");
             } else {
                 loc['hobby'] = hobby;  
+                console.log('check in self loc ', loc);
                 checkIn(loc);
                 
                 // Clear searched pin from map after collaborate/checkin
-                if (otherPin){
-                    otherPin.clearLayers();
+                if (otherPins){
+                    otherPins.clearLayers();
                 };
                 
                 // Toggle button display and hide search bar / tooltip close functionality
                 $('.leaflet-control-mapbox-geocoder').hide();
                 $('.leaflet-popup-close-button').hide();
                 $('.checkin-button').hide();
-                $('#checkout-button-'+username).show();
+                $('.checkout-button').show();
                 $('.info').hide();
             };
         } else {
             // If checking in through other user's pin
-            
+
+            loc = {};
+            loc = locFromId[id];
+            console.log('checkin button other pin ', loc)
             loc['send_message'] = true;
+            
+            var username = loc['username'];
             loc['other_username'] = username;
+            
+            // Call checkIn function with loc
             checkIn(loc);
             $('.leaflet-control-mapbox-geocoder').hide();
             $('.leaflet-popup-close-button').hide();
@@ -365,66 +407,4 @@ geocoderControl.on('select', function(res) {
     $.get('/get_nearby', {city : city}, function(res){
         dropNearbyPins(res.reply,latlon[0],latlon[1]);
     });
-
-    
-
-
-
-
-
 });
-
-
-//******** TESTING **********
-
-
-function createCheckboxes() {
-    console.log('got here');
-  // Collect the types of symbols in this layer. you can also just
-  // hardcode an array of types if you know what you want to filter on,
-  // like var types = ['foo', 'bar'];
-  var typesObj = {}, types = [];
-  var features = map.featureLayer.getGeoJSON().features;
-  for (var i = 0; i < features.length; i++) {
-    typesObj[features[i].properties['hobbies']] = true;
-  }
-  for (var k in typesObj) types.push(k);
-
-  var checkboxes = [];
-  // Create a filter interface.
-  for (var i = 0; i < types.length; i++) {
-    // Create an an input checkbox and label inside.
-    var item = filters.appendChild(document.createElement('div'));
-    var checkbox = item.appendChild(document.createElement('input'));
-    var label = item.appendChild(document.createElement('label'));
-    checkbox.type = 'checkbox';
-    checkbox.id = types[i];
-    checkbox.checked = true;
-    // create a label to the right of the checkbox with explanatory text
-    label.innerHTML = types[i];
-    label.setAttribute('for', types[i]);
-    // Whenever a person clicks on this checkbox, call the update().
-    checkbox.addEventListener('change', update);
-    checkboxes.push(checkbox);
-  }
-
-  // This function is called whenever someone clicks on a checkbox and changes
-  // the selection of markers to be displayed.
-  function update() {
-    var enabled = {};
-    // Run through each checkbox and record whether it is checked. If it is,
-    // add it to the object of types to display, otherwise do not.
-    for (var i = 0; i < checkboxes.length; i++) {
-      if (checkboxes[i].checked) enabled[checkboxes[i].id] = true;
-    }
-    map.featureLayer.setFilter(function(feature) {
-      // If this symbol is in the list, return true. if not, return false.
-      // The 'in' operator in javascript does exactly that: given a string
-      // or number, it says if that is in a object.
-      // 2 in { 2: true } // true
-      // 2 in { } // false
-      return (feature.properties['hobbies'] in enabled);
-    });
-  }
-}
-
