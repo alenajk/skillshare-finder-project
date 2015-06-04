@@ -142,6 +142,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
     // map.featureLayer.setGeoJSON(geoObject);
     otherPins.setGeoJSON(geoObject);
     createCheckboxes();
+    $('#filters').show();
 };
 
 // When user clicks the check-out button, show search bar again
@@ -238,6 +239,7 @@ if (checkedin){
     addCheckoutListeners(checkinId);
     
     $('.leaflet-control-mapbox-geocoder').hide();
+    $('#filters').hide();
     
     // Listen for click on solo-checkin button
     $('#map').on('click', '#solo-checkin-button', function() {
@@ -371,6 +373,7 @@ geocoderControl.on('select', function(res) {
                 $('.checkin-button').hide();
                 $('.checkout-button').show();
                 $('.info').hide();
+                $('#filters').hide();
             };
         } else {
             // If checking in through other user's pin
@@ -387,6 +390,7 @@ geocoderControl.on('select', function(res) {
             checkIn(loc);
             $('.leaflet-control-mapbox-geocoder').hide();
             $('.leaflet-popup-close-button').hide();
+            $('#filters').hide();
             
             // Clear other pins from map after collaborate/checkin
             map.eachLayer(function(layer){ 
@@ -401,9 +405,6 @@ geocoderControl.on('select', function(res) {
             });
             // Clear searched pin
             myPin.clearLayers();
-
-            $('.leaflet-control-mapbox-geocoder').hide();
-            $('.leaflet-popup-close-button').hide();
 
             $('.checkin-button').hide();
             $('#checkout-button-'+username).show();
