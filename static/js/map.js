@@ -117,7 +117,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
         var stringToAdd = '<div class="users">';
         for (var z=0; z<uniqueLocation.users.length; z++){
             var user = uniqueLocation.users[z];
-            stringToAdd+='<p class="info">Username: '+user.username+'<br>'+' Hobby: '+user.hobby_name+'</p>';  
+            stringToAdd+='<p class="info">Username: '+user.username+'<br>'+' Hobby: '+user.hobby_name+'</p><p>Customize your message to this user below!</p><input type="text" id="message" name="message"><br><br>';  
             stringToAdd+=generateButtonHtml(user.username);
             locFromId[user.username] = {
                 "username": user.username,
@@ -340,7 +340,7 @@ geocoderControl.on('select', function(res) {
     $('#map').on('click', '.checkin-button', function(){
         var button = $(this);
         var id = button.attr('id');
- 
+
         // If checking in through self pin
         if(id===session['username']){
             // Get value from hobby input field
@@ -349,7 +349,6 @@ geocoderControl.on('select', function(res) {
                 alert("Please enter a hobby");
             } else {
                 loc['hobby'] = hobby;  
-                console.log('check in self loc ', loc);
                 checkIn(loc);
                 
                 // Clear searched pin from map after collaborate/checkin
@@ -366,12 +365,12 @@ geocoderControl.on('select', function(res) {
             };
         } else {
             // If checking in through other user's pin
-
+            var message = document.getElementById('message').value;
             loc = {};
             loc = locFromId[id];
             console.log('checkin button other pin ', loc)
             loc['send_message'] = true;
-            
+            loc['message'] = message;            
             var username = loc['username'];
             loc['other_username'] = username;
             
