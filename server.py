@@ -274,6 +274,7 @@ def check_in():
     if request.form.get('send_message'):
         other_user = User.query.filter_by(username=other_username).one()
         custom_message = request.form.get('message')
+        print 'message is ', custom_message
         message = client.messages.create(body="User " +user.name+ " says: "+custom_message,
         to="+1"+str(other_user.phone),
         from_="+16502156412")
@@ -290,7 +291,7 @@ def check_out():
     check_in[0].checked_in = False
     db.session.commit()
 
-    return "hi"
+    return jsonify({'status':'Success'})
 
 if __name__ == "__main__":
     app.debug = True

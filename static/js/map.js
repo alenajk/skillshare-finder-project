@@ -111,7 +111,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
             usernames.push(user.username);
         };
 
-        var stringToAdd = '<div>';
+        var stringToAdd = '<div class="info">';
         for (var z=0; z<uniqueLocation.users.length; z++){
             if(uniqueLocation.users.length>1){
                 // console.log('users length eval to true',uni)
@@ -121,9 +121,9 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
             
             stringToAdd+='<br><br><div id="info-'+user.username+'"><p>Username: '+user.username+'<br>'
              if (user.details!='none'){
-                stringToAdd+='<p>Location details: '+user.details+' </p';
+                stringToAdd+='<p>Location details: '+user.details+'</p>';
             }
-            stringToAdd+=' Hobby: '+user.hobby_name+'</p><p>Customize your message to this user below!</p><input type="text" id="message" name="message"></div><br><br>';  
+            stringToAdd+='<p>Hobby: '+user.hobby_name+'</p><p>Customize your message to '+user.username+' below!</p><input type="text" id="message-'+user.username+'" name="message"></div><br><br>';
             stringToAdd+=generateButtonHtml(user.username);
             locFromId[user.username] = {
                 "username": user.username,
@@ -292,20 +292,20 @@ if (checkedin){
 geocoderControl.on('select', function(res) {
     // Clear all markers when re-selecting so users may not check in multiple times
 
-    console.log('res',res); 
+    // console.log('res',res); 
     $('#filters').empty();
     if (myPin){
         myPin.clearLayers();
     };
     if (otherPins){
         otherPins.clearLayers();
-        console.log('otherPins, ', otherPins);
     };
     
     var latlon = res.feature.geometry.coordinates;
     var address = res.feature.place_name;
     var city = cityFromContext(res.feature.context);
 
+    loc = {}
     loc['lat']=latlon[0];
     loc['lon']=latlon[1];
     loc['city']=city;
@@ -370,6 +370,7 @@ geocoderControl.on('select', function(res) {
             if (hobby==""){
                 alert("Please enter a hobby");
             } else {
+                delete loc['send_message'];
                 loc['hobby'] = hobby;  
                 if (document.getElementById("details").value) {
                     var details = document.getElementById("details").value;
@@ -394,8 +395,11 @@ geocoderControl.on('select', function(res) {
             };
         } else {
             // If checking in through other user's pin
-            var message = document.getElementById('message').value;
+            var message = document.getElementById('message-'+id).value;
+            console.log('message is', message);
+            // Clear loc
             loc = {};
+            // Get proper loc data using button's id
             loc = locFromId[id];
             loc['send_message'] = true;
             loc['message'] = message;            
@@ -407,8 +411,9 @@ geocoderControl.on('select', function(res) {
             $('.leaflet-control-mapbox-geocoder').hide();
             $('.leaflet-popup-close-button').hide();
             $('#filters').hide();
-            $('#info-'+username).siblings().hide();
+            $('#info-'+username).siblings().not(':button').remove();
 
+            // Clear other pins besides one through which user is checking in
             otherPins.eachLayer(function(marker){ 
                 try{
                     var coordinates = marker.getLatLng();
@@ -423,13 +428,11 @@ geocoderControl.on('select', function(res) {
                 }
             });
 
-
             // Clear searched pin
             myPin.clearLayers();
 
             $('.checkin-button').hide();
             $('#checkout-button-'+username).show();
-            $('.info').hide();
         };
     });
 
