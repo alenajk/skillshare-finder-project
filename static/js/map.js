@@ -378,6 +378,7 @@ geocoderControl.on('select', function(res) {
                 
                 // Clear searched pin from map after collaborate/checkin
                 if (otherPins){
+                    // map.removeLayer(otherPins);
                     otherPins.clearLayers();
                 };
                 
@@ -405,18 +406,22 @@ geocoderControl.on('select', function(res) {
             $('.leaflet-control-mapbox-geocoder').hide();
             $('.leaflet-popup-close-button').hide();
             $('#filters').hide();
-            
-            // Clear other pins from map after collaborate/checkin
-            map.eachLayer(function(layer){ 
+
+            otherPins.eachLayer(function(marker){ 
                 try{
-                    var coordinates = layer.feature.geometry.coordinates;
-                    if(coordinates[0] != +lat && coordinates[1] != +lon){
-                        try{map.removeLayer(layer);}catch(e){console.log(e)};
+                    var coordinates = marker.getLatLng();
+                    var lat = coordinates.lat;
+                    var lon = coordinates.lng;
+                    coordinates = [lon,lat];
+                    if(coordinates[0] != +loc.loat && coordinates[1] != +loc.lon){
+                        try{map.removeLayer(marker);}catch(e){console.log(e)};
                     }   
                 } catch(TypeError){
                     // Suppress type error
                 }
             });
+
+
             // Clear searched pin
             myPin.clearLayers();
 
