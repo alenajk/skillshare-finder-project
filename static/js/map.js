@@ -115,6 +115,10 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
 
         var stringToAdd = '<div class="users">';
         for (var z=0; z<uniqueLocation.users.length; z++){
+            if(uniqueLocation.users.length>1){
+                // console.log('users length eval to true',uni)
+                otherPin.properties['marker-symbol']='school';
+            };
             var user = uniqueLocation.users[z];
             
             stringToAdd+='<br><br><p class="info">Username: '+user.username+'<br>'
