@@ -121,7 +121,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
             var user = uniqueLocation.users[z];
             console.log('user details' ,user.details);
             
-            if (user.details){
+            if (user.details!='none'){
                 stringToAdd+='<p>Location details: '+user.details+' </p';
             }
             stringToAdd+='<br><p class="info">Username: '+user.username+'<br>'+' Hobby: '+user.hobby_name+'</p><p>Customize your message to this user below!</p><input type="text" id="message" name="message"><br><br>';  
