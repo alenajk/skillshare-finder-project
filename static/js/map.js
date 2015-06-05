@@ -195,10 +195,21 @@ function createCheckboxes() {
   var typesObj = {}, types = [];
   var features = map.featureLayer.getGeoJSON().features;
   for (var i = 0; i < features.length; i++) {
-    typesObj[features[i].properties['hobbies']] = true;
+    var hobbies = features[i].properties['hobbies']
+    var uniqueHobbies = [];
+    $.each(hobbies, function(b, el){
+        if($.inArray(el, uniqueHobbies) === -1) uniqueHobbies.push(el);
+    });
+    console.log('hobbies,uniqueHobbies',hobbies,uniqueHobbies);
+    if (hobbies.length!==uniqueHobbies.length){
+        hobbies=uniqueHobbies;
+        features[i].properties['hobbies'] = hobbies;
+    };
+    typesObj[hobbies] = true;
   }
-  for (var k in typesObj) types.push(k);
 
+  for (var k in typesObj) types.push(k);
+  
   var checkboxes = [];
   for (var i = 0; i < types.length; i++) {
     var item = filters.appendChild(document.createElement('div'));
@@ -214,11 +225,14 @@ function createCheckboxes() {
   };
 
   function update() {
+    console.log('heere');
     var enabled = {};
     for (var i = 0; i < checkboxes.length; i++) {
       if (checkboxes[i].checked) enabled[checkboxes[i].id] = true;
+      console.log('enabled',enabled);
     }
     map.featureLayer.setFilter(function(feature) {
+      console.log('properties',feature.properties['hobbies']);
       return (feature.properties['hobbies'] in enabled);
     });
   };
