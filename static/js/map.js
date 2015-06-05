@@ -42,7 +42,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
     for (var i=0; i<nearbyUsers.length; i++){
         var nearbyUser = nearbyUsers[i];
         var dist = haversine(lat,lon,nearbyUser.lat, nearbyUser.lon);
-        if (dist<1){
+        if (dist<2){
             selectedUsers.push(nearbyUser);
         };
     };
@@ -79,8 +79,6 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
         // console.log(uniqueLocations[0].users.length);
     };
         
-    // var marker_object_dict = { "type": "FeatureCollection"};
-
     // for each latlon in dictionary /object, drop a pin
     
     var features = [];
@@ -105,7 +103,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
             }
         };
         features.push(otherPin);
-        console.log("featuressssss", features);
+        console.log("features", features);
 
 
 
@@ -117,14 +115,13 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
 
         var stringToAdd = '<div class="users">';
         for (var z=0; z<uniqueLocation.users.length; z++){
-            console.log('hi',user);
             var user = uniqueLocation.users[z];
-            console.log('user details' ,user.details);
             
-            if (user.details!='none'){
+            stringToAdd+='<br><br><p class="info">Username: '+user.username+'<br>'
+             if (user.details!='none'){
                 stringToAdd+='<p>Location details: '+user.details+' </p';
             }
-            stringToAdd+='<br><p class="info">Username: '+user.username+'<br>'+' Hobby: '+user.hobby_name+'</p><p>Customize your message to this user below!</p><input type="text" id="message" name="message"><br><br>';  
+            stringToAdd+=' Hobby: '+user.hobby_name+'</p><p>Customize your message to this user below!</p><input type="text" id="message" name="message"><br><br>';  
             stringToAdd+=generateButtonHtml(user.username);
             locFromId[user.username] = {
                 "username": user.username,
@@ -132,7 +129,8 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
                 "lat": user.lat,
                 "lon": user.lon,
                 "city": user.city,
-                "address": user.address
+                "address": user.address,
+                "details": user.details
             };
             otherPin.properties.hobbies.push(user.hobby_name);
         };
@@ -206,7 +204,6 @@ function createCheckboxes() {
     $.each(hobbies, function(b, el){
         if($.inArray(el, uniqueHobbies) === -1) uniqueHobbies.push(el);
     });
-    console.log('hobbies,uniqueHobbies',hobbies,uniqueHobbies);
     if (hobbies.length!==uniqueHobbies.length){
         hobbies=uniqueHobbies;
         features[i].properties['hobbies'] = hobbies;
@@ -231,14 +228,11 @@ function createCheckboxes() {
   };
 
   function update() {
-    console.log('heere');
     var enabled = {};
     for (var i = 0; i < checkboxes.length; i++) {
       if (checkboxes[i].checked) enabled[checkboxes[i].id] = true;
-      console.log('enabled',enabled);
     }
     map.featureLayer.setFilter(function(feature) {
-      console.log('properties',feature.properties['hobbies']);
       return (feature.properties['hobbies'] in enabled);
     });
   };
@@ -345,7 +339,6 @@ geocoderControl.on('select', function(res) {
     for (var key in fav_hobbies){
         var fav_hobby = key;
         var selectOption = '<option id="'+key+'">'+key+'</option>';
-        console.log('selectOption: ', selectOption);
         selectHtml+=selectOption;
     };
 
@@ -359,7 +352,6 @@ geocoderControl.on('select', function(res) {
     $('#map').on('change', '#selecthobby', function(){
         var selected = $('#selecthobby').find(":selected").text();
         if((selected)!='Or select a favorited hobby'){
-            console.log(selected);
             document.getElementById("hobby").value=selected;
         };
     });
@@ -407,7 +399,6 @@ geocoderControl.on('select', function(res) {
             var message = document.getElementById('message').value;
             loc = {};
             loc = locFromId[id];
-            console.log('checkin button other pin ', loc)
             loc['send_message'] = true;
             loc['message'] = message;            
             var username = loc['username'];

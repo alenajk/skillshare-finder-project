@@ -11,10 +11,10 @@
         	
             #map { 
                 position:absolute; 
-                top:70px; 
+                top:20px; 
                 bottom:10px; 
                 width:90%;
-                margin: 120px 80px 50px 90px; 
+                margin:120px 0px 0px 0px; 
             }
             
             #header1 {
@@ -39,7 +39,7 @@
           border-radius:3px;
           }
     </style>
-    <p>Are you checked in anywhere? {{checkedin}} Session: {{ session, session['email'], session['username'] }}</p>
+    <!-- <p>Are you checked in anywhere? {{checkedin}} Session: {{ session, session['email'], session['username'] }}</p> -->
     
     <!-- {% if fav_hobbies %} -->
         <!-- <p>fav_hobbies: {{ fav_hobbies }}</p> -->
@@ -56,6 +56,6 @@
     </script>
     <script src="/static/js/map.js"></script>
 {% else %}
-    <h1>Homepage!</h1>
+    <h1>Welcome to Skillit!</h1>
 {% endif %}
 {% endblock %}

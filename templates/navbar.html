@@ -1,9 +1,9 @@
-<h3>Skillshare finder</h3>
+<h3>Skillit</h3>
 <ul>
     {% if 'email' in session.keys() %}
         <li><a href="/logout">Log out</a></li>
-    	<li><a href="/users/profile">Profile</a></li>
-    	<li><a href="/">Home</a></li>
+        <li><a href="/users/profile">Profile</a></li>
+        <li><a href="/">Home</a></li>
     {% else %}
         <li><a href="/login">Login</a></li>
         <li><a href="/register">Register</a></li>
