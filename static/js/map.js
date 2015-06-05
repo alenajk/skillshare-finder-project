@@ -117,8 +117,14 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
 
         var stringToAdd = '<div class="users">';
         for (var z=0; z<uniqueLocation.users.length; z++){
+            console.log('hi',user);
             var user = uniqueLocation.users[z];
-            stringToAdd+='<p class="info">Username: '+user.username+'<br>'+' Hobby: '+user.hobby_name+'</p><p>Customize your message to this user below!</p><input type="text" id="message" name="message"><br><br>';  
+            console.log('user details' ,user.details);
+            
+            if (user.details){
+                stringToAdd+='<p>Location details: '+user.details+' </p';
+            }
+            stringToAdd+='<br><p class="info">Username: '+user.username+'<br>'+' Hobby: '+user.hobby_name+'</p><p>Customize your message to this user below!</p><input type="text" id="message" name="message"><br><br>';  
             stringToAdd+=generateButtonHtml(user.username);
             locFromId[user.username] = {
                 "username": user.username,
@@ -345,6 +351,7 @@ geocoderControl.on('select', function(res) {
 
     selectHtml+='</select><br><br>'
     stringToAdd+=selectHtml;
+    stringToAdd+='<p>Location details (optional)</p><input type="text" id="details" name="details"><br><br>';
     stringToAdd+=generateButtonHtml(session['username']);
     myPin.bindPopup(stringToAdd);
     myPin.addTo(map);
@@ -374,6 +381,11 @@ geocoderControl.on('select', function(res) {
                 alert("Please enter a hobby");
             } else {
                 loc['hobby'] = hobby;  
+                if (document.getElementById("details").value) {
+                    var details = document.getElementById("details").value;
+                    console.log('details',details);
+                    loc['details'] = details;
+                }
                 checkIn(loc);
                 
                 // Clear searched pin from map after collaborate/checkin

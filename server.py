@@ -236,7 +236,14 @@ def check_in():
     email = session['email']
     user = User.query.filter_by(email=email).one()
     user_id = user.user_id
-    checkin = CheckIn(user_id=user_id, address=address, lat=lat, lon=lon, city=city, hobby_id=hobby_id, checked_in=True)
+
+    if request.form.get('details'):
+        details = request.form.get('details')
+        print "there are details! ", details
+        checkin = CheckIn(user_id=user_id, address=address, lat=lat, lon=lon, city=city, hobby_id=hobby_id, details=details, checked_in=True)
+    else:
+        details = 'false'
+        checkin = CheckIn(user_id=user_id, address=address, lat=lat, lon=lon, city=city, hobby_id=hobby_id, checked_in=True)
 
     # adding the location info to the DB
     db.session.add(checkin)
@@ -257,12 +264,13 @@ def check_in():
             'lat' : lat,
             'lon' : lon,
             'city' : city,
-            'hobby' : hobby
+            'hobby' : hobby,
+            'details' : details
             }
 
     # Send a message if collaborating
     other_username = request.form.get('other_username')
-    print "other username: ", other_username
+
     if request.form.get('send_message'):
         other_user = User.query.filter_by(username=other_username).one()
         custom_message = request.form.get('message')

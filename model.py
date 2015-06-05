@@ -56,6 +56,7 @@ class CheckIn(db.Model):
     city = db.Column(db.String(30))
     lat = db.Column(db.Float, nullable=False)
     lon = db.Column(db.Float, nullable=False)
+    details = db.Column(db.String(100))
     checked_in = db.Column(db.Boolean, nullable=False)
 
     # Define relationship to user
@@ -73,7 +74,8 @@ class CheckIn(db.Model):
             'lon' : self.lon,
             'hobby_id' : self.hobby_id,
             'hobby_name' : self.hobby.name,
-            'username' : self.user.username
+            'username' : self.user.username,
+            'details' : self.details
         }
     
     def __repr__(self):

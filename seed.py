@@ -53,8 +53,8 @@ def load_check_ins():
 
     for line in user_data:
         line = line.rstrip().split(',')
-        user_id, hobby_id, address, city, lat, lon, checked_in = line
-        current_line = CheckIn(user_id=user_id, hobby_id=hobby_id, address=address, city=city, lat=lat, lon=lon, checked_in=checked_in)
+        user_id, hobby_id, address, city, lat, lon, details, checked_in = line
+        current_line = CheckIn(user_id=user_id, hobby_id=hobby_id, address=address, city=city, lat=lat, lon=lon, details=details, checked_in=checked_in)
         print line
         db.session.add(current_line)
 
