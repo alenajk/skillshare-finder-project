@@ -65,6 +65,8 @@ class CheckIn(db.Model):
     hobby = db.relationship("Hobby", backref=db.backref("check_ins"))
 
     def to_dict(self):
+        """Returns a dictionary of relevant check-in information"""
+
         return {
             'check_in_id' : self.check_in_id,
             'user_id' : self.user_id,

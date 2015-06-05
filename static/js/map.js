@@ -63,6 +63,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
     for (var i=0; i<selectedUsers.length; i++){
         var selected_user = selectedUsers[i];
         var loc = latLonInUniqueLocations(selected_user.lat, selected_user.lon);
+
         // loc is false if not in array 
         if(loc){
             uniqueLocation.users.push(selected_user);
@@ -79,7 +80,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
         // console.log(uniqueLocations[0].users.length);
     };
         
-    // for each latlon in dictionary /object, drop a pin
+    // for each latlon in dictionary/object, drop a pin
     
     var features = [];
 
@@ -103,9 +104,6 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
             }
         };
         features.push(otherPin);
-        console.log("features", features);
-
-
 
         var usernames = [];
         for (var l=0; l<uniqueLocation.users.length; l++){
@@ -113,7 +111,7 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
             usernames.push(user.username);
         };
 
-        var stringToAdd = '<div class="users">';
+        var stringToAdd = '<div>';
         for (var z=0; z<uniqueLocation.users.length; z++){
             if(uniqueLocation.users.length>1){
                 // console.log('users length eval to true',uni)
@@ -121,11 +119,11 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
             };
             var user = uniqueLocation.users[z];
             
-            stringToAdd+='<br><br><p class="info">Username: '+user.username+'<br>'
+            stringToAdd+='<br><br><div id="info-'+user.username+'"><p>Username: '+user.username+'<br>'
              if (user.details!='none'){
                 stringToAdd+='<p>Location details: '+user.details+' </p';
             }
-            stringToAdd+=' Hobby: '+user.hobby_name+'</p><p>Customize your message to this user below!</p><input type="text" id="message" name="message"><br><br>';  
+            stringToAdd+=' Hobby: '+user.hobby_name+'</p><p>Customize your message to this user below!</p><input type="text" id="message" name="message"></div><br><br>';  
             stringToAdd+=generateButtonHtml(user.username);
             locFromId[user.username] = {
                 "username": user.username,
@@ -146,7 +144,6 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
         type: "FeatureCollection",
         features: features
     };
-    console.log(geoObject)
     // map.featureLayer.setGeoJSON(geoObject);
     otherPins.setGeoJSON(geoObject);
     createCheckboxes();
@@ -306,10 +303,7 @@ geocoderControl.on('select', function(res) {
     };
     
     var latlon = res.feature.geometry.coordinates;
-    
     var address = res.feature.place_name;
-    console.log('address, ',address);
-
     var city = cityFromContext(res.feature.context);
 
     loc['lat']=latlon[0];
@@ -348,7 +342,7 @@ geocoderControl.on('select', function(res) {
 
     selectHtml+='</select><br><br>'
     stringToAdd+=selectHtml;
-    stringToAdd+='<p>Location details (optional)</p><input type="text" id="details" name="details"><br><br>';
+    stringToAdd+='<p>Location details</p><input type="text" id="details" name="details" placeholder="example: Pete\'s Coffee"><br><br>';
     stringToAdd+=generateButtonHtml(session['username']);
     myPin.bindPopup(stringToAdd);
     myPin.addTo(map);
@@ -413,6 +407,7 @@ geocoderControl.on('select', function(res) {
             $('.leaflet-control-mapbox-geocoder').hide();
             $('.leaflet-popup-close-button').hide();
             $('#filters').hide();
+            $('#info-'+username).siblings().hide();
 
             otherPins.eachLayer(function(marker){ 
                 try{
