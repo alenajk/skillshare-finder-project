@@ -13,7 +13,9 @@
                 <li>Saved hobbies</li>
                 <ul>
                 {% for fav_hobby in fav_hobbies %}
-                    <li>{{ fav_hobby.hobby.name }} (<button type="button" id="{{fav_hobby.hobby_id}}">Remove</button>)</li>
+                    <div id={{fav_hobby.hobby_id}}>
+                        <li>{{ fav_hobby.hobby.name }} (<button type="button" id="{{fav_hobby.hobby_id}}">Remove</button>)</li>
+                    </div>
                 {% endfor %}
                 </ul>
             {% endif %}
@@ -44,7 +46,7 @@
                 $.post('/remove_hobby', {'hobby_id' : hobby_id});
                 // Reload the page so that newly removed hobby is no longer visible
                 var url = "/users/profile";
-                $(location).attr('href',url);
+                $("#"+hobby_id).remove();
             });
         </script>
     {% endif %}
