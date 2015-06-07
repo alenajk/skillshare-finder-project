@@ -5,46 +5,10 @@
         <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
     {% endif %}
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-    {% if 'email' in session.keys() %}
-        <style>
-        	body { margin:0; padding:0; }
-        	
-            #map { 
-                position:absolute; 
-                top:20px; 
-                bottom:10px; 
-                width:90%;
-                margin:120px 0px 0px 0px; 
-            }
-            
-            #header1 {
-                margin-right: auto;
-                margin-left: auto;
-                width: 50%;
-            }
-    	</style>
-    {% endif %}
 {% endblock %}
 
 {% block body %}
 {% if 'email' in session.keys() %}
-    <style>
-        .filter-ui {
-          background:#fff;
-          position:absolute;
-          top:180px;
-          right:10px;
-          z-index:100;
-          padding:10px;
-          border-radius:3px;
-          }
-    </style>
-    <!-- <p>Are you checked in anywhere? {{checkedin}} Session: {{ session, session['email'], session['username'] }}</p> -->
-    
-    <!-- {% if fav_hobbies %} -->
-        <!-- <p>fav_hobbies: {{ fav_hobbies }}</p> -->
-    <!-- {% endif %} -->
-
     <nav id='filters' class='filter-ui'>NAVBAR</nav>
     <div id='map'></div>
     

@@ -4,25 +4,24 @@
     <title>Skillit</title>
     {% block head %} {% endblock %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    <style>
-    	body {
-    	    background-image: url("/static/map2.png");
-    	}
-    </style>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
-
-<body>
-	<div class="container-fluid">
-    	{% include 'navbar.html' %}
-	<div>
+{% if 'email' not in session.keys() %}
+    <body class='logged-out'>
+{% else %}
+    <body>
+{% endif %}
+    <div class="container-fluid">
+        {% include 'navbar.html' %}
+    <div>
 {% with messages = get_flashed_messages() %}
-	{% if messages %}
-		<ul class=flashes>
-		{% for message in messages %}
-			<li> {{ message }} </li>
-		{% endfor %}
-		</ul>
-	{% endif %}
+    {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+            <li> {{ message }} </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 {% endwith %}
 
 {% block body %} {% endblock %}

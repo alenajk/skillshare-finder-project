@@ -144,10 +144,18 @@ function dropNearbyPins(nearbyUsers, lat, lon) {
         type: "FeatureCollection",
         features: features
     };
-    // map.featureLayer.setGeoJSON(geoObject);
+    
     otherPins.setGeoJSON(geoObject);
     createCheckboxes();
     $('#filters').show();
+
+    console.log('leaflet showing',document.getElementsByClassName('leaflet-popup-close-button'));
+    
+    $('.leaflet-marker-icon').on('click',function(){
+        var leaf = $('.leaflet-popup-close-button');
+        leaf.show();
+        $('.leaflet-popup-close-button').show();
+    });
 };
 
 // When user clicks the check-out button, show search bar again
@@ -290,10 +298,11 @@ if (checkedin){
 
 
 geocoderControl.on('select', function(res) {
-    // Clear all markers when re-selecting so users may not check in multiple times
 
-    // console.log('res',res); 
+    // Reset navbar
     $('#filters').empty();
+
+    // Clear all markers when re-selecting so users may not check in multiple times
     if (myPin){
         myPin.clearLayers();
     };
@@ -387,7 +396,7 @@ geocoderControl.on('select', function(res) {
                 
                 // Toggle button display and hide search bar / tooltip close functionality
                 $('.leaflet-control-mapbox-geocoder').hide();
-                $('.leaflet-popup-close-button').hide();
+                // $('.leaflet-popup-close-button').hide();
                 $('.checkin-button').hide();
                 $('.checkout-button').show();
                 $('.info').hide();
@@ -409,7 +418,7 @@ geocoderControl.on('select', function(res) {
             // Call checkIn function with loc
             checkIn(loc);
             $('.leaflet-control-mapbox-geocoder').hide();
-            $('.leaflet-popup-close-button').hide();
+            // $('.leaflet-popup-close-button').hide();
             $('#filters').hide();
             $('#info-'+username).siblings().not(':button').remove();
 

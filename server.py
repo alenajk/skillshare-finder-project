@@ -41,10 +41,7 @@ def index():
         print fav_hobbies, fav_hobby_ids
         
         if checkedin:
-            # Make sure I'm getting the most recent checkin
-            # Order by reverse ID
-            print "checked in list: ", checkedin
-            # iterate through and check to see if checked in?
+            # To ensure most recent checkin, order by reverse ID
             checkedin = checkedin[-1].checked_in
             print checkedin
         if checkedin == True:
@@ -56,9 +53,10 @@ def index():
             hobby_id = check_in_object.hobby_id
             # City - str type not working in homepage.html variable def
             checkedin = [lat,lon,checkin_id,user_id,hobby_id]
-            print checkedin
         else:
+            # 'false' instead of False because this will be sent to map.js
             checkedin = 'false'
+
     return render_template("homepage.html", checkedin=checkedin, fav_hobbies=fav_hobby_ids)
 
 @app.route('/register', methods=['GET','POST'])
@@ -134,7 +132,6 @@ def show_user_profile():
     all_hobbies = []
 
     for hobby in hobbies:
-        print hobby.name
         all_hobbies.append(hobby.name)
 
     return render_template("user_profile.html", user=user, fav_hobby_names=fav_hobby_names, fav_hobbies=fav_hobbies, all_hobbies=all_hobbies)
@@ -174,8 +171,6 @@ def add_hobby():
         # Add new entry to users_hobbies table in db
         new_user_hobby = UserHobby(user_id=user.user_id,hobby_id=hobby_id)
         db.session.add(new_user_hobby)
-        print "newhobby to add is: ", hobby
-
 
     db.session.commit()    
     flash("You added " + str(hobby) + " to your profile!")
@@ -192,7 +187,6 @@ def remove_hobby():
     hobby_id = request.form.get('hobby_id')
     hobby = Hobby.query.filter_by(hobby_id=hobby_id).one().name
     user_hobby = UserHobby.query.filter_by(user_id=user_id,hobby_id=hobby_id).one()
-    print "user hobby: ", user_hobby.user_id
 
     # Change user_id to 0 in db
     user_hobby.user_id = 0
@@ -211,7 +205,6 @@ def get_nearby():
 
     # Create a list of dictionaries containing nearby checked-in user location
     active_nearby_users_dicts = [user.to_dict() for user in active_nearby_users]
-    print "active_nearby_users_dicts ", active_nearby_users_dicts
 
     return jsonify(reply=active_nearby_users_dicts)
 
@@ -239,7 +232,6 @@ def check_in():
 
     if request.form.get('details'):
         details = request.form.get('details')
-        print "there are details! ", details
         checkin = CheckIn(user_id=user_id, address=address, lat=lat, lon=lon, city=city, hobby_id=hobby_id, details=details, checked_in=True)
     else:
         details = 'false'
@@ -248,7 +240,6 @@ def check_in():
     # adding the location info to the DB
     db.session.add(checkin)
     db.session.commit()
-    print checkin
     check_in_id = checkin.check_in_id
     username = checkin.user.username
     user_id = checkin.user_id
@@ -274,7 +265,6 @@ def check_in():
     if request.form.get('send_message'):
         other_user = User.query.filter_by(username=other_username).one()
         custom_message = request.form.get('message')
-        print 'message is ', custom_message
         message = client.messages.create(body="User " +user.name+ " says: "+custom_message,
         to="+1"+str(other_user.phone),
         from_="+16502156412")
@@ -285,9 +275,7 @@ def check_in():
 def check_out():
     
     check_in_id = request.args.get('check_in_id')
-    print "check_in_id", check_in_id
     check_in = CheckIn.query.filter_by(check_in_id=check_in_id).all()
-    print "check_in", check_in
     check_in[0].checked_in = False
     db.session.commit()
 

@@ -1,0 +1,38 @@
+#logo {
+    height: 30px;
+    margin-top: -3px;
+    margin-right: 5px;
+}
+
+body.logged-out{
+    background-image: url("/static/map2.png");
+}
+
+body { 
+    margin:0; 
+    padding:0; 
+}
+
+#map { 
+    position:absolute; 
+    top:20px; 
+    bottom:10px; 
+    width:90%;
+    margin:120px 0px 0px 0px; 
+}
+
+#header1 {
+    margin-right: auto;
+    margin-left: auto;
+    width: 50%;
+}
+
+.filter-ui {
+  background:#fff;
+  position:absolute;
+  top:180px;
+  right:10px;
+  z-index:100;
+  padding:10px;
+  border-radius:3px;
+  }
