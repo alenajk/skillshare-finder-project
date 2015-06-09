@@ -2,6 +2,7 @@
 
 from model import User, Hobby, UserHobby, CheckIn, connect_to_db, db
 from server import app
+import os
 
 phone_secret = os.environ.get("PHONESECRET")
 
