@@ -2,3 +2,4 @@
 env/
 twilio_secrets.sh
 skillshare.db
+phone_secret.sh

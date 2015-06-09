@@ -2,13 +2,16 @@
 
 {% block body %}
 
-<form action='/login' method='POST'>
-<p><label>Email:</label>
-    <input type="text" name="email" id="email">
-</p>
-<p><label>Password:</label>
-    <input type="password" name="password" id="password">
-</p>
-<input type="submit" value="submit">
-</form>
+<div class="jumbotron" style="margin-top:300px">
+	<form action='/login' method='POST'>
+	<p class="p-login">Please log in below:</p>
+	<p><label>Email:</label><br>
+	    <input class="login-form" placeholder="joanne@gmail.com" type="text" name="email" id="email">
+	</p>
+	<p><label>Password:</label><br>	
+	    <input class="login-form" placeholder="mypassword" type="password" name="password" id="password">
+	</p>
+	<input class="btn" type="submit" value="Log in">
+	</form>
+</div>
 {% endblock %}

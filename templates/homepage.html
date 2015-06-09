@@ -9,7 +9,7 @@
 
 {% block body %}
 {% if 'email' in session.keys() %}
-    <nav id='filters' class='filter-ui'>NAVBAR</nav>
+    <nav id='filters' class='filter-ui'></nav>
     <div id='map'></div>
     
     <script>
@@ -20,6 +20,12 @@
     </script>
     <script src="/static/js/map.js"></script>
 {% else %}
-    <h1>Welcome to Skillit!</h1>
+    <div class="jumbotron" style="margin-top:300px">
+        <h2>Welcome to Skillit</h2>
+        <h4>Find a buddy and cook up some skills</h4>
+        <br>
+        <a href="/login" style="margin-right:15px"><button type="button" class="homepage-button">Log in</button></a>
+        <a href="/register"><button type="button" class="homepage-button">Register</button></a>
+    </div>
 {% endif %}
 {% endblock %}

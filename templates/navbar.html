@@ -2,16 +2,16 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="/"><img id="logo" src="/static/skillet.png"></a>
-      <a class="navbar-brand" href="/">Skillit</a>
+      <a class="navbar-brand" style="font-size: 24px" href="/">Skillit</a>
     </div>
     <div>
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
+        <li><a href="/">Home</a></li>
         {% if 'email' in session.keys() %}
             <li><a href="/logout">Logout</a></li>
             <li><a href="/users/profile">Profile</a></li> 
         {% else %}
-            <li><a href="/logout">Log in</a></li>
+            <li><a href="/login">Log in</a></li>
             <li><a href="/register">Register</a></li> 
         {% endif %}
       </ul>

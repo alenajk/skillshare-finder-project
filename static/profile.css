@@ -1,0 +1,76 @@
+
+body {
+    text-align:center;
+    background-image: url("/static/map3.jpg");
+    color:black;
+}
+
+#profile {
+    border:1px solid black;
+    border-radius:6px;
+    margin-left:auto;
+    margin-right:auto;
+    width:95%;
+    background-color: #EEE;
+}
+
+.basic-info li {
+    margin: 15px;
+    display:inline;
+    list-style-type: none;
+    text-align:center;
+    font-size:20px;
+}
+
+.info-container {
+    display: table;
+    margin:0 auto;
+}
+
+.saved-hobbies {
+    margin: 0 auto;
+    font-size:22px;
+}
+
+#add-hobby {
+    margin: 15px 15px 15px 15px;
+}
+
+#add-hobby p {
+    font-size:20px;
+}
+
+#name {
+    margin-bottom:10px;
+    color:black;
+}
+
+#name p {
+    text-align:center;
+    font-size:40px;
+    margin-top:10px;
+}
+
+#username p, #email p, #phone p {
+    font-size:25px;
+    text-indent: 12px;
+}
+
+#email, #username, #phone {
+    margin-bottom:10px;
+}
+
+.remove-btn, .submit-add {
+    margin-left:14px;
+    margin-top:10px;
+    margin-bottom:1px;
+    font-size:16px;
+    opacity:.8;
+    background-color: transparent;
+}
+
+.alert {
+    background-color:#00CC99;
+    font-size:24px;
+    opacity: .6;
+}

@@ -2,9 +2,11 @@
 <html>
 <head>
     <title>Skillit</title>
-    {% block head %} {% endblock %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/bootstrap/js/bootstrap.js">
     <link rel="stylesheet" href="/static/styles.css">
+    <link href='http://fonts.googleapis.com/css?family=Pompiere|Antic|Open+Sans+Condensed:300,300italic,700' rel='stylesheet' type='text/css'>
+    {% block head %} {% endblock %}
 </head>
 {% if 'email' not in session.keys() %}
     <body class='logged-out'>
@@ -15,8 +17,8 @@
         {% include 'navbar.html' %}
     <div>
 {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul class=flashes>
+    {% if messages and register is defined %}
+        <ul class="flashes">
         {% for message in messages %}
             <li> {{ message }} </li>
         {% endfor %}

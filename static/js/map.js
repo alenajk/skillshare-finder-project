@@ -6,9 +6,39 @@ console.log(checkedin);
 if(fav_hobbies){
     console.log(fav_hobbies)
 };
-var map = L.mapbox.map('map', 'mapbox.streets');
+
+var x = []
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(setPosition);
+    } else { 
+        setMap([37.7833,-122.4167],9)
+    }
+}
+
+console.log(x);
+getLocation();
+console.log(x);
+
+function setPosition(position){
+    console.log('made it');
+    console.log(position);
+    x.push(position.coords.latitude,position.coords.longitude);
+    console.log(x);
+    setMap(x,16);
+}
+
+console.log(x)
+// [37.7833,-122.4167]
+
 var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
-geocoderControl.addTo(map);
+
+function setMap(x,y){
+    var map = L.mapbox.map('map', 'mapbox.streets').setView(x,y);
+    geocoderControl.addTo(map);
+}
+
 var otherPin;
 var myPin;
 var locFromId = {};
@@ -300,6 +330,7 @@ if (checkedin){
 geocoderControl.on('select', function(res) {
 
     // Reset navbar
+    $('#filters').css("visibility", "visible")
     $('#filters').empty();
 
     // Clear all markers when re-selecting so users may not check in multiple times

@@ -4,25 +4,40 @@
 {% endblock %}
 
 {% block body %}
-<form action='/register' method='POST'>
-    <p><label>Full name:</label>
-    <input type="text" name="name" id="name">
-    </p>
-    <p><label>Username:</label>
-    <input type="text" name="username" id="username">
-    </p>
-    <p><label>Password:</label>
-    <input type="password" name="password" id="password">
-    </p>
-    <p><label>Email:</label>
-    <input type="text" name="email" id="email">
-    </p>
-    <p><label>Phone number:</label>
-    <input type="text" name="phone" id="phone">
-    </p>
-    <p>
-    <br>
-    <input type="submit" value="Submit">
-    </p>
-</form>
+<div class="jumbotron" id="jumbotron-register" margin-top="220px">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <p class="flashes"> {{ message }} </p>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+    <form action='/register' method='POST'>
+        <p id="p-register"><label>Please register below:</label></p>
+        <p><label>Full name:</label>
+        <br>
+        <input type="text" name="name" id="name" placeholder="Joanne Doe" style="text-align:center">
+        </p>
+        <p><label>Username:</label>
+        <br>
+        <input type="text" name="username" id="username" placeholder="joannedoe" style="text-align:center">
+        </p>
+        <p><label>Password:</label>
+        <br>
+        <input type="password" name="password" id="password" placeholder="mypassword" style="text-align:center">
+        </p>
+        <p><label>Email:</label>
+        <br>
+        <input type="text" name="email" id="email" placeholder="joanne@gmail.com" style="text-align:center">
+        </p>
+        <p><label>Phone number:</label>
+        <br>
+        <input type="text" name="phone" id="phone" placeholder="5555555555" style="text-align:center">
+        </p>
+        <p>
+        <br>
+        <input class="btn" type="submit" value="Submit">
+        </p>
+    </form>
+</div>
 {% endblock %}

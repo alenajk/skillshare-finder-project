@@ -84,7 +84,7 @@ def register():
             flash('You were successfully registered! You may now log in.')
             return redirect('/login')
     
-    return render_template('register.html')
+    return render_template('register.html',register=True)
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -96,7 +96,7 @@ def login():
 
         # Check to see if email exists in db
         if pw_in_db == []:
-            flash("Looks like that email hasn't been registered yet.")
+            flash("Looks like that email hasn't been registered yet. You can sign up below!")
             return redirect('/register')
         else:
             if pw_in_db[0].password == password:

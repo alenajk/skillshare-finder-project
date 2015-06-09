@@ -1,53 +1,82 @@
 {% extends 'base.html' %}
 {% block head %}
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <link rel="stylesheet" href="/static/profile.css">
 {% endblock %}
 
 {% block body %}
-    <p>Hello!</p>
-    {% if 'email' in session.keys() %}
-        <ul>
-            <li>Name: {{ user.name }}
-            <li>Username: {{ user.username }}</li>
-            {% if fav_hobbies %}
-                <li>Saved hobbies</li>
-                <ul>
-                {% for fav_hobby in fav_hobbies %}
-                    <div id={{fav_hobby.hobby_id}}>
-                        <li>{{ fav_hobby.hobby.name }} (<button type="button" id="{{fav_hobby.hobby_id}}">Remove</button>)</li>
+    <div id="profile">
+        {% if 'email' in session.keys() %}
+                <div>
+                    <div id="name">
+                        <p>{{ user.name }}</p>
                     </div>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        </ul>
-        <br>
-        <p>Would you like to add a new hobby to your favorites?</p>
-        <form action="/add_hobby" method="POST">
+                    <div class="info-container">
+                        <ul class="basic-info">
+                            <li>Username: {{ user.username }}</li>
+                            |
+                            <li>Email: {{ user.email }}</li>
+                            |
+                            <li>Phone: {{ user.phone }}</li>
+                        </ul>
+                    </div>
+                </div>
+                {% if fav_hobbies %}
+                    <div>
+                        <h3 style="text-align:center"><strong>Saved hobbies</strong></h3>
+                        <table class="saved-hobbies table-hover">
+                          <tbody>
+                            {% for fav_hobby in fav_hobbies %}
+                              <tr id="{{fav_hobby.hobby_id}}" scope="col">
+                                <td>{{ fav_hobby.hobby.name }}</td>
+                                <td>
+                                  <button class="remove-btn" type="button" id="{{fav_hobby.hobby_id}}">Remove</button>
+                                </td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                {% endif %}
             
-            {% if all_hobbies|length > fav_hobby_names|length %}
-                <p><label>Please select an existing hobby</label>
-                <select name="hobby">
-                
-                {% for hobby in all_hobbies %}
-                    {% if hobby not in fav_hobby_names %}
-                        <option value="{{ hobby }}">{{ hobby }}</option>
+            <br>
+            <div id="add-hobby">
+                <p style="font-size:24px">Add a new hobby to your favorites!</p>
+                <form action="/add_hobby" method="POST">
+                    
+                    {% if all_hobbies|length > fav_hobby_names|length %}
+                        <select style="font-size:20px" name="hobby">  
+                        {% for hobby in all_hobbies %}
+                            {% if hobby not in fav_hobby_names %}
+                                <option value="{{ hobby }}">{{ hobby }}</option>
+                            {% endif %}
+                        {% endfor %}
+                        </select>
+                        <input class="submit-add" type="submit" name="hobbysubmit" value="Add to profile">
+                        <p style="margin-top:20px"><label>Can't find your hobby? Add it below!</label></p>
                     {% endif %}
-                {% endfor %}
-                </select>
-                <input type="submit" name="hobbysubmit" value="Add to profile">
-                <p><label>Can't find your hobby? Add it below!</label></p>
-            {% endif %}
-            <input type="text" name="newhobby">
-            <input type="submit" name="newhobbysubmit" value="Add to profile">
-        </form>
-        <script>
-            $(':button').on('click', function(){
-                var hobby_id = $(this).context.id;
-                $.post('/remove_hobby', {'hobby_id' : hobby_id});
-                // Reload the page so that newly removed hobby is no longer visible
-                var url = "/users/profile";
-                $("#"+hobby_id).remove();
-            });
-        </script>
-    {% endif %}
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <strong>{{ message }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <input type="text" name="newhobby">
+                    <input style="margin-bottom:20px" class="submit-add" type="submit" name="newhobbysubmit" value="Add to profile">
+                </form>
+            </div>
+            <script>
+                $(':button').on('click', function(){
+                    var hobby_id = $(this).context.id;
+                    $.post('/remove_hobby', {'hobby_id' : hobby_id});
+                    // Reload the page so that newly removed hobby is no longer visible
+                    var url = "/users/profile";
+                    $(location).attr('href',url);
+                });
+            </script>
+        {% endif %}
+    </div>
 {% endblock %}
