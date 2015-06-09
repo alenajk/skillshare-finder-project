@@ -8,10 +8,13 @@ body {
 #profile {
     border:1px solid black;
     border-radius:6px;
+    margin-top:35px;
     margin-left:auto;
     margin-right:auto;
-    width:95%;
-    background-color: #EEE;
+    width:90%;
+    background-color:black;
+    opacity:.8;
+    color:white;
 }
 
 .basic-info li {
@@ -37,7 +40,18 @@ body {
 }
 
 #add-hobby p {
-    font-size:20px;
+    font-size:20px; 
+}
+
+.submit-add {
+    color:white;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: black;
 }
 
 #name {
@@ -49,6 +63,7 @@ body {
     text-align:center;
     font-size:40px;
     margin-top:10px;
+    color:#BAE276;
 }
 
 #username p, #email p, #phone p {
@@ -70,7 +85,8 @@ body {
 }
 
 .alert {
-    background-color:#00CC99;
+    background-color:#DF0260;
     font-size:24px;
     opacity: .6;
+    color:white;
 }

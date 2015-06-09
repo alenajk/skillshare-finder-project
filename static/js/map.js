@@ -7,37 +7,10 @@ if(fav_hobbies){
     console.log(fav_hobbies)
 };
 
-var x = []
-
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(setPosition);
-    } else { 
-        setMap([37.7833,-122.4167],9)
-    }
-}
-
-console.log(x);
-getLocation();
-console.log(x);
-
-function setPosition(position){
-    console.log('made it');
-    console.log(position);
-    x.push(position.coords.latitude,position.coords.longitude);
-    console.log(x);
-    setMap(x,16);
-}
-
-console.log(x)
-// [37.7833,-122.4167]
-
 var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
 
-function setMap(x,y){
-    var map = L.mapbox.map('map', 'mapbox.streets').setView(x,y);
-    geocoderControl.addTo(map);
-}
+var map = L.mapbox.map('map', 'mapbox.streets').setView([37.7833,-122.4167],13);
+geocoderControl.addTo(map);
 
 var otherPin;
 var myPin;
@@ -344,7 +317,10 @@ geocoderControl.on('select', function(res) {
     var latlon = res.feature.geometry.coordinates;
     var address = res.feature.place_name;
     var city = cityFromContext(res.feature.context);
-
+    var latFromLatLon = latlon[0]
+    var lonFromLatLon = latlon[1]
+    map.setView([lonFromLatLon,latFromLatLon],16);
+    
     loc = {}
     loc['lat']=latlon[0];
     loc['lon']=latlon[1];
@@ -386,6 +362,7 @@ geocoderControl.on('select', function(res) {
     stringToAdd+=generateButtonHtml(session['username']);
     myPin.bindPopup(stringToAdd);
     myPin.addTo(map);
+
 
     $('#map').on('change', '#selecthobby', function(){
         var selected = $('#selecthobby').find(":selected").text();

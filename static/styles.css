@@ -8,24 +8,35 @@
 .navbar {
     padding-top: 8px;
     padding-bottom: 6px;
-    font-family: "Antic";
+    font-family: 'Antic', "Lucida Sans Unicode", sans-serif;
+    background-color: #2A2A2A;
+    color:#BCCE98;
 }
 
 .navbar a {
     margin-left:10px;
     margin-right:10px;
     font-size:20px;
+    color:#BCCE98;
+}
+
+.navbar-inverse .navbar-nav li a {
+  color:#BCCE98;
+}
+
+.navbar-inverse .navbar-brand {
+    color:#BCCE98; 
 }
 
 body.logged-out{
     background-image: url("/static/map2.png");
-    font-family: "Antic";
+    font-family: 'Antic', "Lucida Sans Unicode", sans-serif;
 }
 
 body { 
     margin:0; 
     padding:0; 
-    font-family: "Antic";
+    font-family: 'Antic', "Lucida Sans Unicode", sans-serif;
 }
 
 #map { 
@@ -65,13 +76,23 @@ body {
   border-bottom: 0;
   padding-right: 60px;
   padding-left: 60px;
-  width: 550px;
+  width: 600px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 320px;
-  color: inherit;
   border-width: 3px;
   border-style: solid;
+  background-color:black;
+  opacity:.8;
+  color:white;
+}
+
+.jumbotron button, .jumbotron .btn {
+  color:white;
+}
+
+.jumbotron input {
+  color:black;
 }
 
 .jumbotron p {

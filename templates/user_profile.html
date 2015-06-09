@@ -24,7 +24,7 @@
                 {% if fav_hobbies %}
                     <div>
                         <h3 style="text-align:center"><strong>Saved hobbies</strong></h3>
-                        <table class="saved-hobbies table-hover">
+                        <table class="saved-hobbies">
                           <tbody>
                             {% for fav_hobby in fav_hobbies %}
                               <tr id="{{fav_hobby.hobby_id}}" scope="col">
@@ -39,6 +39,16 @@
                 {% endif %}
             
             <br>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <strong>{{ message }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             <div id="add-hobby">
                 <p style="font-size:24px">Add a new hobby to your favorites!</p>
                 <form action="/add_hobby" method="POST">
@@ -54,16 +64,6 @@
                         <input class="submit-add" type="submit" name="hobbysubmit" value="Add to profile">
                         <p style="margin-top:20px"><label>Can't find your hobby? Add it below!</label></p>
                     {% endif %}
-                    {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert">
-                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                    <strong>{{ message }}</strong>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
                     <input type="text" name="newhobby">
                     <input style="margin-bottom:20px" class="submit-add" type="submit" name="newhobbysubmit" value="Add to profile">
                 </form>
