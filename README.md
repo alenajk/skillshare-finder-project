@@ -21,3 +21,30 @@ If a user doesn't want to meet up with any of the currently checked-in users, he
 
 #### Profile
 A user may also add favorite hobbies to his or her profile, either by selecting a hobby that already exists in the database or by adding a new one. Then, when checking in, the user may select a favorite hobby via a dropdown populated by hobbies linked to that user in the database.
+
+![image](/static/profile.jpg)
+
+#### Setup
+
+-- Clone or fork this repo:
+https://github.com/alenajk/skillshare-finder-project/
+
+-- Create a virtual environment in your local directory:
+![image](/static/virtualenv.png)
+![image](/static/source.png)
+
+-- Install requirements.txt:
+![image](/static/req.png)
+
+-- Get your own secret key for Twilio and add to a file titled secrets.sh.
+
+-- Set up a phone_secret.sh file to seed database with users that have your phone number (so that you can send Twilio messages to yourself).
+
+-- Create and seed the database:
+![image](/static/model.png)
+![image](/static/db-create.png)
+
+-- Run the app:
+![image](/static/app.png)
+
+-- Navigate to localhost:5000 in your browser, create and account, and get started!
