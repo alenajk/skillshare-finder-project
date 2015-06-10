@@ -29,8 +29,7 @@ A user may also add favorite hobbies to his or her profile, either by selecting 
 
 #### Setup
 
--- Clone or fork this repo:
-https://github.com/alenajk/skillshare-finder-project/
+-- Clone or fork this repo.
 
 -- Create a virtual environment in your local directory:
 
@@ -56,4 +55,4 @@ https://github.com/alenajk/skillshare-finder-project/
 
 ![image](/static/app.png)
 
--- Navigate to localhost:5000 in your browser, create and account, and get started!
+-- Navigate to localhost:5000 in your browser, create an account, and get started!
