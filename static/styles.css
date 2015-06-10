@@ -91,6 +91,17 @@ body {
   color:white;
 }
 
+.jumbotron button:hover {
+  background-color:white;
+  color:black;
+}
+
+.jumbotron input:hover{
+  background-color:white;
+  color:black;   
+}
+
+
 .jumbotron input {
   color:black;
 }

@@ -54,6 +54,11 @@ input, select, textarea {
   color: black;
 }
 
+.submit-add:hover, .saved-hobbies button:hover {
+    background-color:white;
+    color:black; 
+}
+
 #name {
     margin-bottom:10px;
     color:black;
